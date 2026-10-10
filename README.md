@@ -41,9 +41,40 @@ Welcome to the official web platform for **Christ The Potter Church (CPC)** & **
 
 ## 🚀 Tech Stack
 * **Framework:** Next.js 14 (App Router)
-* **Styling:** Modern Vanilla CSS Design System with responsive mobile optimization
+* **Styling:** Tailwind CSS — tokens in `tailwind.config.js` (`paper`, `brand`, `ink`), fonts Anton (display) + Archivo (body) via `next/font`
 * **Icons:** Lucide React
 * **Deployment:** Vercel
+
+---
+
+## 📁 Project Structure
+
+```
+app/              Pages (Next.js App Router) — one folder per route
+components/
+  ui/             Design-system primitives: Button, Card, Eyebrow,
+                  SectionHeader, PageHeader, CtaBand, Field, Accordion
+  home/           One file per homepage section
+  give/ visit/ salvation/ connect/ sermons/
+                  Interactive pieces used by a single page
+  Navbar, Footer, Logo, LiveCountdown, modals — site-wide components
+lib/
+  site-config.js  Phone, address, service times, nav, bank accounts
+  conferences.js  Conferences, past editions, ministries
+  sermons.js      Sermon library + playSermon()
+  giving.js       Giving categories; ONLINE_GIVING_ENABLED flag
+public/images/    Final, optimized images used by the live site
+design-source/    Raw/original design files (docx, flyers, PSD-style
+                  exports). Not tracked in git, not used at runtime —
+                  reference material only.
+scripts/          One-off utility scripts (e.g. importing new design
+                  assets into public/images)
+```
+
+If you add a new raw design file, drop it in `design-source/`, add a
+mapping entry in `scripts/import-design-assets.js`, then run
+`npm run import-assets` to copy it into `public/images` under its
+final name.
 
 ---
 

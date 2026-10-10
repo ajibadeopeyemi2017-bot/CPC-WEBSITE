@@ -1,166 +1,65 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Volume2, VolumeX, Radio, X, ExternalLink, Disc } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Radio, X, ExternalLink } from 'lucide-react';
+import { SOCIAL_LINKS } from '../lib/site-config';
 
+// There are no hosted audio files yet, so "playing" a sermon surfaces it here
+// and hands the listener to Mixlr, where recordings and live streams live.
 export default function AudioPlayerBar() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState({
-    title: 'Cultivating the Habit of Seeking Divine Help',
-    minister: 'Apostle Oluwafunminiyi Olufisayo',
-    category: 'Spiritual Growth & Prayer',
-    src: '' // can be stream or audio
-  });
+  const [track, setTrack] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Listen to custom event for sermon play triggers
   useEffect(() => {
-    const handlePlaySermon = (e) => {
-      if (e.detail) {
-        setCurrentTrack(e.detail);
-        setIsPlaying(true);
-        setIsOpen(true);
-      }
+    const onPlay = (e) => {
+      if (!e.detail) return;
+      setTrack(e.detail);
+      setIsOpen(true);
     };
-    window.addEventListener('play-cpc-sermon', handlePlaySermon);
-    return () => window.removeEventListener('play-cpc-sermon', handlePlaySermon);
+    window.addEventListener('play-cpc-sermon', onPlay);
+    return () => window.removeEventListener('play-cpc-sermon', onPlay);
   }, []);
 
   if (!isOpen) {
     return (
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        style={{
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          zIndex: 99,
-          background: 'linear-gradient(135deg, #0d6338 0%, #0b1528 100%)',
-          border: '1.5px solid #d4af37',
-          color: '#ffffff',
-          padding: '12px 20px',
-          borderRadius: '9999px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          fontWeight: 700,
-          fontSize: '0.88rem',
-          transition: 'transform 0.2s ease',
-          cursor: 'pointer'
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-        onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+        className="fixed bottom-4 right-4 z-40 flex items-center gap-2.5 bg-ink-950 px-4 py-3 text-[0.64rem] font-bold uppercase tracking-[0.2em] text-white shadow-xl ring-1 ring-white/15 hover:bg-brand-700 sm:bottom-6 sm:right-6"
       >
         <span className="live-dot" />
-        <Radio size={16} className="text-gold" />
-        <span>Audio Stream / Mixlr</span>
+        Listen live
       </button>
     );
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '16px',
-      right: '16px',
-      left: '16px',
-      maxWidth: '640px',
-      marginLeft: 'auto',
-      zIndex: 99,
-      background: 'rgba(11, 21, 40, 0.95)',
-      border: '1px solid rgba(212, 175, 55, 0.35)',
-      borderRadius: '16px',
-      padding: '14px 20px',
-      boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-      backdropFilter: 'blur(20px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: '16px'
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', overflow: 'hidden' }}>
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          aria-label={isPlaying ? 'Pause' : 'Play'}
-          style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '50%',
-            background: 'var(--gold-gradient)',
-            color: '#060c1a',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            boxShadow: '0 4px 14px rgba(212, 175, 55, 0.3)'
-          }}
-        >
-          {isPlaying ? <Pause size={20} /> : <Play size={20} style={{ marginLeft: '2px' }} />}
-        </button>
-
-        <div style={{ overflow: 'hidden' }}>
-          <div style={{
-            fontSize: '0.88rem',
-            fontWeight: 700,
-            color: '#ffffff',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }}>
-            {currentTrack.title}
-          </div>
-          <div style={{
-            fontSize: '0.75rem',
-            color: 'rgba(255, 255, 255, 0.65)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <span>{currentTrack.minister}</span>
-            <span>&bull;</span>
-            <span style={{ color: '#d4af37' }}>{currentTrack.category}</span>
-          </div>
-        </div>
+    <div
+      role="region"
+      aria-label="Audio"
+      className="fixed inset-x-3 bottom-3 z-40 ml-auto flex max-w-xl items-center gap-4 bg-ink-950 p-4 text-white shadow-2xl ring-1 ring-white/15 sm:inset-x-6 sm:bottom-6"
+    >
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-brand-600">
+        <Radio size={18} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold">{track ? track.title : 'Christ The Potter Church — live audio'}</p>
+        <p className="truncate text-xs text-white/60">
+          {track ? `${track.minister} · ${track.category}` : 'Live during every service'}
+        </p>
       </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-        <a
-          href="https://mixlr.com/christ-the-potter-church"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            borderRadius: '20px',
-            background: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: '#ffffff',
-            fontSize: '0.75rem',
-            fontWeight: 600
-          }}
-        >
-          <Radio size={12} className="text-gold" />
-          <span>Mixlr Hub</span>
-          <ExternalLink size={10} />
-        </a>
-
-        <button
-          onClick={() => setIsOpen(false)}
-          aria-label="Close Player"
-          style={{
-            color: 'rgba(255, 255, 255, 0.6)',
-            padding: '4px',
-            display: 'flex',
-            alignItems: 'center'
-          }}
-        >
-          <X size={18} />
-        </button>
-      </div>
+      <a
+        href={SOCIAL_LINKS.mixlr}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex shrink-0 items-center gap-1.5 border border-white/40 px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.18em] hover:bg-white hover:text-ink-950"
+      >
+        Mixlr
+        <ExternalLink size={11} />
+      </a>
+      <button type="button" onClick={() => setIsOpen(false)} aria-label="Close audio bar" className="shrink-0 text-white/60 hover:text-white">
+        <X size={18} />
+      </button>
     </div>
   );
 }

@@ -28,3 +28,7 @@ yarn-error.log*
 
 # temporary & extracted
 scratch/
+
+# raw design originals (docx/jpeg/pdf) — not used by the app at runtime,
+# kept locally for reference. Final assets live in public/images.
+/design-source/

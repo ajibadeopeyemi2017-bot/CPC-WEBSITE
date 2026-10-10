@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Radio, Sparkles, ChevronRight, X, Calendar } from 'lucide-react';
+import { Radio, ChevronRight, X } from 'lucide-react';
+import { CHURCH, SOCIAL_LINKS } from '../lib/site-config';
 
 const announcements = [
   {
@@ -29,7 +30,7 @@ const announcements = [
   {
     tag: 'MINISTERIAL ACADEMY',
     title: 'AMITES: Acquiring Ministers\' Teaching School',
-    subtitle: 'Modular training for five-fold ministers & church workers | Inquiries: 0814 863 7261',
+    subtitle: `Modular training for five-fold ministers & church workers | Inquiries: ${CHURCH.phone}`,
     link: '/connect#conferences',
     linkText: 'Enroll Now'
   },
@@ -37,7 +38,7 @@ const announcements = [
     tag: 'WEEKLY BROADCAST',
     title: 'Connect Online via Mixlr & Facebook',
     subtitle: 'Sunday 8:00 AM | Tuesday School of Prayer 5:00 PM | Thursday Revelational Hour 5:00 PM',
-    link: 'https://mixlr.com/christ-the-potter-church',
+    link: SOCIAL_LINKS.mixlr,
     external: true,
     linkText: 'Listen Live'
   }
@@ -58,101 +59,42 @@ export default function AnnouncementTicker() {
 
   const current = announcements[currentIndex];
 
+  const linkClasses =
+    'inline-flex items-center gap-1.5 font-bold uppercase tracking-[0.18em] text-brand-300 hover:text-white';
+
   return (
-    <div style={{
-      background: 'linear-gradient(90deg, #060c1a 0%, #0d6338 50%, #060c1a 100%)',
-      color: '#ffffff',
-      fontSize: '0.85rem',
-      padding: '8px 16px',
-      borderBottom: '1px solid rgba(212, 175, 55, 0.25)',
-      position: 'relative',
-      zIndex: 50
-    }}>
-      <div className="cpc-container" style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', overflow: 'hidden' }}>
-          <span style={{
-            background: 'rgba(212, 175, 55, 0.2)',
-            border: '1px solid #d4af37',
-            color: '#f5d77f',
-            padding: '2px 8px',
-            borderRadius: '9999px',
-            fontSize: '0.7rem',
-            fontWeight: 700,
-            letterSpacing: '0.04em',
-            whiteSpace: 'nowrap',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            <Sparkles size={11} />
+    <div className="relative z-50 bg-ink-950 text-white">
+      <div className="mx-auto flex h-9 w-full max-w-[1240px] items-center justify-between gap-4 px-5 text-[0.68rem] sm:px-8">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="hidden shrink-0 font-bold uppercase tracking-[0.25em] text-brand-300 sm:inline">
             {current.tag}
           </span>
-
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }}>
-            <strong style={{ color: '#ffffff', fontWeight: 600 }}>{current.title}:</strong>
-            <span style={{ color: 'rgba(255, 255, 255, 0.85)' }}>{current.subtitle}</span>
-          </div>
+          <span className="hidden h-3 w-px bg-white/20 sm:block" />
+          <span className="truncate text-white/85">
+            <strong className="font-semibold text-white">{current.title}</strong>
+            <span className="hidden md:inline"> — {current.subtitle}</span>
+          </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+        <div className="flex shrink-0 items-center gap-3">
           {current.external ? (
-            <a
-              href={current.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                color: '#f5d77f',
-                fontWeight: 600,
-                textDecoration: 'underline',
-                fontSize: '0.8rem'
-              }}
-            >
-              <Radio size={13} className="text-gold" />
+            <a href={current.link} target="_blank" rel="noopener noreferrer" className={linkClasses}>
+              <Radio size={12} />
               {current.linkText}
             </a>
           ) : (
-            <Link
-              href={current.link}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                color: '#f5d77f',
-                fontWeight: 600,
-                fontSize: '0.8rem'
-              }}
-            >
+            <Link href={current.link} className={linkClasses}>
               {current.linkText}
-              <ChevronRight size={13} />
+              <ChevronRight size={12} />
             </Link>
           )}
-
           <button
+            type="button"
             onClick={() => setIsVisible(false)}
             aria-label="Dismiss announcement"
-            style={{
-              color: 'rgba(255,255,255,0.6)',
-              padding: '2px',
-              display: 'flex',
-              alignItems: 'center'
-            }}
+            className="text-white/50 hover:text-white"
           >
-            <X size={15} />
+            <X size={14} />
           </button>
         </div>
       </div>

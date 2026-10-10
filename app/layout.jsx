@@ -1,9 +1,13 @@
+import { Anton, Archivo } from 'next/font/google';
 import './globals.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import AnnouncementTicker from '../components/AnnouncementTicker';
 import AudioPlayerBar from '../components/AudioPlayerBar';
 import PlanVisitModal from '../components/PlanVisitModal';
+
+const display = Anton({ weight: '400', subsets: ['latin'], variable: '--font-display', display: 'swap' });
+const body = Archivo({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
 
 export const metadata = {
   title: 'Christ The Potter Church | Ile-Ife | Apostle Oluwafunminiyi Olufisayo',
@@ -36,15 +40,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body>
+    <html lang="en" className={`${display.variable} ${body.variable}`}>
+      <body className="bg-paper font-sans text-ink-950">
         <AnnouncementTicker />
         <Navbar />
-        <main style={{ flex: 1 }}>
+        <main className="flex-1">
           {children}
         </main>
         <AudioPlayerBar />

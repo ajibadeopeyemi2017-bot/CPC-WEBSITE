@@ -1,447 +1,161 @@
-'use client';
+import { Car, Smile, Users, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { CHURCH, SERVICE_SCHEDULE } from '../../lib/site-config';
+import PageHeader from '../../components/ui/PageHeader';
+import Container from '../../components/ui/Container';
+import SectionHeader from '../../components/ui/SectionHeader';
+import Eyebrow from '../../components/ui/Eyebrow';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import Accordion from '../../components/ui/Accordion';
+import VisitForm from '../../components/visit/VisitForm';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  Car,
-  Users,
-  ShieldCheck,
-  Smile,
-  ChevronDown,
-  ChevronUp,
-  Compass,
-  Phone,
-  Sparkles,
-  CheckCircle2,
-  Heart
-} from 'lucide-react';
+export const metadata = {
+  title: "I'm New — Plan a Visit | Christ The Potter Church",
+  description: 'Plan your first visit to Christ The Potter Church in Ile-Ife: service times, directions, parking, kids church, and what to expect.',
+};
+
+const MAPS_URL = 'https://maps.google.com/?q=PHCN+Office+Off+Fajuyi+Road+Ile+Ife';
+
+const steps = [
+  { title: 'Arrival & welcome', body: 'Arrive 10 – 15 minutes before 8:00 AM. Ushers welcome you at the gate and guide you inside.' },
+  { title: 'Praise & worship', body: 'Heartfelt, Spirit-filled adoration leading into intimate communion with God.' },
+  { title: 'The Word', body: 'Apostolic teaching from Apostle Oluwafunminiyi, designed for real spiritual transformation.' },
+  { title: 'Guest reception', body: 'A relaxed 5-minute welcome after service, with refreshments and a gift for first-timers.' },
+];
+
+const expectations = [
+  { icon: Car, title: 'Secure parking', body: 'Park within the PHCN office premises — marshals will direct you to a spot.' },
+  { icon: Smile, title: 'A personal host', body: "Plan ahead and someone will greet you by name and walk you to your seat." },
+  { icon: Users, title: "Potter's Kids Church", body: 'Bible lessons, worship, crafts and snacks for children, with vetted adult supervision.' },
+  { icon: Sparkles, title: 'His presence', body: "From the opening prayer to the benediction, expect God's presence in song and word." },
+];
 
 const faqs = [
   {
-    q: 'Where exactly is the church located?',
-    a: 'We are located at 76B, PHCN Office (Upper Floor), Off Fajuyi Road, Ile-Ife, Osun State, Nigeria. Look out for the Christ The Potter Church banner at the gate. If you need help finding us, call our protocol desk at 0814 863 7261.'
+    q: 'Where exactly is the church?',
+    a: `We're at ${CHURCH.address.full}. Look out for the Christ The Potter Church banner at the gate. If you need help finding us, call the protocol desk on ${CHURCH.phone}.`,
   },
   {
-    q: 'What time should I arrive for service?',
-    a: 'Our Sunday Celebration Service begins promptly at 8:00 AM. We encourage first-time guests to arrive 10–15 minutes early so our hospitality team can welcome you, assist with children check-in, and guide you to your reserved VIP seat.'
+    q: 'What time should I arrive?',
+    a: 'Sunday service begins promptly at 8:00 AM. First-time guests should arrive 10 – 15 minutes early so our hospitality team can welcome you and help with children check-in.',
   },
   {
     q: 'What should I wear?',
-    a: 'Come as you are! You will see people dressed in traditional native attire, smart-casual, or formal business suits. We value the posture of your heart above your clothing style.'
+    a: "Come as you are. You'll see traditional attire, smart-casual and formal suits — we value the posture of your heart above your clothing.",
   },
   {
     q: 'What happens with my kids during service?',
-    a: 'We have an active Potter\'s Kids Church tailored specifically for children. They enjoy engaging Bible lessons, worship, arts and crafts, and healthy refreshments under loving and vetted adult supervision.'
+    a: "Potter's Kids Church runs alongside the main service with Bible lessons, worship, arts and crafts, and refreshments, under loving and vetted supervision.",
   },
   {
-    q: 'Will I be singled out or embarrassed as a first-timer?',
-    a: 'Never! We will never make you stand up alone or put you on the spot. After service, we invite all first-time visitors to a relaxed 5-minute reception with Apostle Oluwafunminiyi and our pastors to enjoy a complimentary gift and light refreshments.'
-  }
+    q: 'Will I be singled out as a first-timer?',
+    a: "Never. We won't make you stand up alone or put you on the spot. After service, first-timers are invited to a relaxed reception with our pastors.",
+  },
 ];
 
 export default function PlanAVisitPage() {
-  const [openFaq, setOpenFaq] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    serviceDate: 'Upcoming Sunday (8:00 AM)',
-    attendeeCount: '1 person',
-    hasKids: 'No',
-    kidAges: '',
-    specialAssistance: ''
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
-
   return (
-    <div>
-      {/* Header */}
-      <section style={{
-        background: 'linear-gradient(180deg, #060c1a 0%, #0b1528 100%)',
-        color: '#ffffff',
-        padding: '70px 0 80px',
-        textAlign: 'center'
-      }}>
-        <div className="cpc-container">
-          <span className="badge-gold" style={{ marginBottom: '14px' }}>
-            <Calendar size={13} />
-            First-Time Guest Experience
-          </span>
-          <h1 style={{ fontSize: 'clamp(2.4rem, 4.5vw, 3.4rem)', fontWeight: 800, marginBottom: '16px' }}>
-            Plan Your Visit to <span className="text-gold-gradient">Christ The Potter Church</span>
-          </h1>
-          <p style={{
-            fontSize: '1.1rem',
-            color: 'rgba(255, 255, 255, 0.8)',
-            maxWidth: '680px',
-            margin: '0 auto',
-            lineHeight: 1.6
-          }}>
-            From the moment you step foot on our grounds in Ile-Ife, you are not a guest—you are family coming home. Let us prepare for your arrival!
-          </p>
-        </div>
+    <>
+      <PageHeader
+        eyebrow="I'm new"
+        title="Plan your visit."
+        highlight="Family coming home."
+        intro="From the moment you step onto our grounds in Ile-Ife, you're not a guest — you're family. Let us prepare for your arrival."
+        image="/images/pastor-oluwafunminiyi.jpg"
+        imageAlt="Apostle Oluwafunminiyi Olufisayo"
+      >
+        <Button variant="solid" size="lg" href="#register">
+          Reserve a seat
+          <ArrowRight size={14} />
+        </Button>
+        <Button variant="outlineLight" size="lg" href={MAPS_URL} external>
+          Get directions
+        </Button>
+      </PageHeader>
+
+      <section className="py-20 lg:py-28">
+        <Container className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+          <Card id="register" className="scroll-mt-24 p-6 sm:p-10">
+            <VisitForm />
+          </Card>
+
+          <div>
+            <Eyebrow>Step by step</Eyebrow>
+            <h2 className="mt-4 font-display text-[2.4rem] uppercase leading-[0.95] text-ink-950 sm:text-5xl">
+              What your Sunday looks like
+            </h2>
+            <ol className="mt-8 border-b border-ink-950/10">
+              {steps.map((step, i) => (
+                <li key={step.title} className="flex gap-5 border-t border-ink-950/10 py-5">
+                  <span className="font-display text-3xl text-brand-600">{String(i + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h3 className="font-display text-xl uppercase leading-tight text-ink-950">{step.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-ink-950/70">{step.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-8 flex gap-4 bg-brand-50 p-5">
+              <ShieldCheck size={22} className="shrink-0 text-brand-600" />
+              <p className="text-sm leading-relaxed text-brand-800">
+                <strong>Zero-pressure policy:</strong> we will never embarrass you, ask you to stand alone, or solicit funds
+                awkwardly. You are our honoured guest.
+              </p>
+            </div>
+          </div>
+        </Container>
       </section>
 
-      {/* Main Booking Form & Experience Overview */}
-      <section style={{ padding: '80px 0', background: '#f8fafc' }}>
-        <div className="cpc-container">
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '40px',
-            alignItems: 'flex-start'
-          }}>
-            {/* Booking Form Card */}
-            <div className="cpc-card" style={{
-              padding: '36px',
-              borderRadius: '24px',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.06)'
-            }}>
-              {submitted ? (
-                <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                  <div style={{
-                    width: '68px',
-                    height: '68px',
-                    borderRadius: '50%',
-                    background: '#ecfdf5',
-                    color: '#0e6b3c',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 18px',
-                    border: '2px solid #a7f3d0'
-                  }}>
-                    <CheckCircle2 size={36} />
-                  </div>
+      <section className="bg-ink-950 py-28 text-white [clip-path:polygon(0_48px,100%_0,100%_calc(100%_-_48px),0_100%)] lg:py-36">
+        <Container>
+          <SectionHeader tone="light" eyebrow="What to expect" title="Made ready for you" />
+          <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {expectations.map(({ icon: Icon, title, body }) => (
+              <div key={title} className="border-t border-white/15 pt-6">
+                <Icon size={22} strokeWidth={1.75} className="text-brand-300" />
+                <h3 className="mt-5 font-display text-2xl uppercase leading-none">{title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-white/70">{body}</p>
+              </div>
+            ))}
+          </div>
 
-                  <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--navy-900)', marginBottom: '8px' }}>
-                    Your VIP Visit is Reserved!
-                  </h3>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '24px' }}>
-                    Praise God, <strong>{formData.name}</strong>! Our Head Usher and Hospitality Team have been notified. A reserved seat has been prepared for you this <strong>{formData.serviceDate}</strong>.
-                  </p>
-
-                  <div style={{
-                    background: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '16px',
-                    padding: '20px',
-                    textAlign: 'left',
-                    marginBottom: '24px',
-                    fontSize: '0.88rem'
-                  }}>
-                    <strong style={{ display: 'block', color: 'var(--navy-900)', marginBottom: '6px' }}>What to do on arrival:</strong>
-                    <p style={{ color: '#64748b', margin: '0 0 10px', lineHeight: 1.5 }}>
-                      Tell the ushers at the entrance: <em>&quot;I am {formData.name}, I reserved a visit online.&quot;</em> They will personally escort you and your party.
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#0e6b3c', fontWeight: 600 }}>
-                      <Phone size={14} />
-                      <span>Direct line on the morning of your visit: 0814 863 7261</span>
-                    </div>
-                  </div>
-
-                  <button onClick={() => setSubmitted(false)} className="btn btn-primary" style={{ width: '100%' }}>
-                    Register Another Guest
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <span className="badge-green" style={{ marginBottom: '8px' }}>
-                    VIP Pre-Registration
-                  </span>
-                  <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--navy-900)', margin: '6px 0 10px' }}>
-                    Tell Us You&apos;re Coming
-                  </h3>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '24px' }}>
-                    Planning your visit allows us to save you seats, prepare for your children, and greet you by name.
-                  </p>
-
-                  <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div>
-                      <label className="form-label">Full Name *</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Sister Grace Adeleke"
-                        className="form-input"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      />
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div>
-                        <label className="form-label">Phone Number *</label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="080 1234 5678"
-                          className="form-input"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        />
-                      </div>
-                      <div>
-                        <label className="form-label">Email Address</label>
-                        <input
-                          type="email"
-                          placeholder="you@email.com"
-                          className="form-input"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        />
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div>
-                        <label className="form-label">Service Date *</label>
-                        <select
-                          className="form-select"
-                          value={formData.serviceDate}
-                          onChange={(e) => setFormData({ ...formData, serviceDate: e.target.value })}
-                        >
-                          <option>Upcoming Sunday (8:00 AM)</option>
-                          <option>Tuesday School of Prayer (5:00 PM)</option>
-                          <option>Thursday Revelational Hour (5:00 PM)</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="form-label">Total Guests</label>
-                        <select
-                          className="form-select"
-                          value={formData.attendeeCount}
-                          onChange={(e) => setFormData({ ...formData, attendeeCount: e.target.value })}
-                        >
-                          <option>1 person (Just me)</option>
-                          <option>2 people (Couple / Friends)</option>
-                          <option>3 - 5 people (Family)</option>
-                          <option>6+ people (Group)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div>
-                        <label className="form-label">Bringing Children?</label>
-                        <select
-                          className="form-select"
-                          value={formData.hasKids}
-                          onChange={(e) => setFormData({ ...formData, hasKids: e.target.value })}
-                        >
-                          <option>No</option>
-                          <option>Yes (1 Child)</option>
-                          <option>Yes (2 Children)</option>
-                          <option>Yes (3+ Children)</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="form-label">Children Ages (Optional)</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. 4 and 8 years old"
-                          className="form-input"
-                          value={formData.kidAges}
-                          onChange={(e) => setFormData({ ...formData, kidAges: e.target.value })}
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="form-label">Special Needs or Requests</label>
-                      <textarea
-                        rows={2}
-                        placeholder="Need wheelchair access, translation, or transportation guidance..."
-                        className="form-textarea"
-                        value={formData.specialAssistance}
-                        onChange={(e) => setFormData({ ...formData, specialAssistance: e.target.value })}
-                      />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: '6px' }}>
-                      <Calendar size={18} />
-                      <span>Confirm My Visit &amp; Reserve Seats</span>
-                    </button>
-                  </form>
-                </div>
-              )}
-            </div>
-
-            {/* Experience Checklist & Location Guide */}
+          <div className="mt-16 grid gap-10 border-t border-white/15 pt-10 lg:grid-cols-2">
             <div>
-              <div style={{ marginBottom: '28px' }}>
-                <span className="badge-gold">Step-by-Step</span>
-                <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--navy-900)', marginTop: '6px', marginBottom: '8px' }}>
-                  What Your Sunday Looks Like
-                </h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>
-                  Here is what you can look forward to at Christ The Potter Church.
-                </p>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '36px' }}>
-                {[
-                  {
-                    icon: Car,
-                    title: 'Ample & Secure Parking',
-                    text: 'Park safely within the PHCN office premises. Our security marshals will direct you straight to a convenient spot.'
-                  },
-                  {
-                    icon: Smile,
-                    title: 'Warm Personal Reception',
-                    text: 'No awkward feeling. You will be received with love, handed a service bulletin, and escorted to an ideal seat.'
-                  },
-                  {
-                    icon: Sparkles,
-                    title: 'Atmosphere of the Holy Spirit',
-                    text: 'From the opening prayer to the final apostolic benediction, you will feel God’s transforming presence in song and word.'
-                  },
-                  {
-                    icon: Heart,
-                    title: 'First-Timer Reception & Gift',
-                    text: 'Enjoy brief refreshments after service and receive a special spiritual audio message gift from Apostle Oluwafunminiyi.'
-                  }
-                ].map((item, idx) => {
-                  const Icon = item.icon;
-                  return (
-                    <div
-                      key={idx}
-                      className="cpc-card"
-                      style={{
-                        padding: '20px 24px',
-                        display: 'flex',
-                        gap: '16px',
-                        alignItems: 'flex-start'
-                      }}
-                    >
-                      <div style={{
-                        width: '42px',
-                        height: '42px',
-                        borderRadius: '10px',
-                        background: '#ecfdf5',
-                        color: '#0e6b3c',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0
-                      }}>
-                        <Icon size={20} />
-                      </div>
-                      <div>
-                        <strong style={{ fontSize: '1rem', color: 'var(--navy-900)', display: 'block', marginBottom: '4px' }}>
-                          {item.title}
-                        </strong>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                          {item.text}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Physical Address Reminder Box */}
-              <div style={{
-                background: 'linear-gradient(135deg, #0b1528 0%, #15294d 100%)',
-                color: '#ffffff',
-                borderRadius: '20px',
-                padding: '28px',
-                border: '1px solid rgba(212, 175, 55, 0.3)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#d4af37', marginBottom: '8px' }}>
-                  <MapPin size={18} />
-                  <strong style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Auditorium Address
-                  </strong>
-                </div>
-                <h4 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 10px', color: '#ffffff' }}>
-                  76B, PHCN Office (Upper Floor), Off Fajuyi Road, Ile-Ife, Osun State
-                </h4>
-                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', margin: '0 0 18px', lineHeight: 1.5 }}>
-                  Centrally located in the heart of Ile-Ife with easy access from Campus gates and city centre.
-                </p>
-                <a
-                  href="https://maps.google.com/?q=PHCN+Office+Off+Fajuyi+Road+Ile+Ife"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-sm btn-primary"
-                >
-                  <Compass size={14} />
-                  <span>Open In Google Maps</span>
-                </a>
+              <Eyebrow tone="light">Service times</Eyebrow>
+              <ul className="mt-5 space-y-3">
+                {SERVICE_SCHEDULE.map((service) => (
+                  <li key={service.id} className="flex items-baseline justify-between gap-4 border-b border-white/10 pb-3">
+                    <span className="font-display text-xl uppercase">{service.name}</span>
+                    <span className="shrink-0 text-sm font-semibold text-brand-300">{service.time}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <Eyebrow tone="light">Main auditorium</Eyebrow>
+              <p className="mt-5 font-display text-2xl uppercase leading-tight sm:text-3xl">{CHURCH.address.full}</p>
+              <p className="mt-3 text-sm text-white/70">
+                Central Ile-Ife, with easy access from the campus gates and city centre.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button variant="outlineLight" href={MAPS_URL} external>
+                  Open in Google Maps
+                </Button>
+                <Button variant="outlineLight" href={CHURCH.phoneHref}>
+                  Call {CHURCH.phone}
+                </Button>
               </div>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* Frequently Asked Questions Accordion */}
-      <section style={{ padding: '80px 0', background: '#ffffff', borderTop: '1px solid #e2e8f0' }}>
-        <div className="cpc-container-narrow">
-          <div className="section-header">
-            <span className="badge-green">Common Questions</span>
-            <h2>Frequently Asked Questions</h2>
-            <p>
-              Everything you need to know before joining us this week.
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {faqs.map((faq, idx) => {
-              const isOpen = openFaq === idx;
-              return (
-                <div
-                  key={idx}
-                  style={{
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '14px',
-                    overflow: 'hidden',
-                    background: isOpen ? '#f8fafc' : '#ffffff',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  <button
-                    onClick={() => setOpenFaq(isOpen ? -1 : idx)}
-                    style={{
-                      width: '100%',
-                      padding: '20px 24px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      textAlign: 'left',
-                      fontWeight: 700,
-                      fontSize: '1rem',
-                      color: 'var(--navy-900)'
-                    }}
-                  >
-                    <span>{faq.q}</span>
-                    {isOpen ? <ChevronUp size={18} style={{ color: '#0e6b3c' }} /> : <ChevronDown size={18} style={{ color: '#94a3b8' }} />}
-                  </button>
-
-                  {isOpen && (
-                    <div style={{
-                      padding: '0 24px 20px',
-                      color: 'var(--text-muted)',
-                      fontSize: '0.92rem',
-                      lineHeight: 1.6
-                    }}>
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <section className="py-20 lg:py-28">
+        <Container narrow>
+          <SectionHeader eyebrow="Common questions" title="Before you come" className="md:grid-cols-1" />
+          <Accordion items={faqs} />
+        </Container>
       </section>
-    </div>
+    </>
   );
 }
