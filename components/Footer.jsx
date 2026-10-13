@@ -1,14 +1,16 @@
 import Link from 'next/link';
-import { MapPin, Phone, Mail, Radio, Facebook } from 'lucide-react';
+import { MapPin, Phone, Mail, Radio, Facebook, MessageCircle } from 'lucide-react';
 import { CHURCH, SERVICE_SCHEDULE, SOCIAL_LINKS, NAV_LINKS } from '../lib/site-config';
 import Logo from './Logo';
 import Button from './ui/Button';
+import LiveModeToggle from './LiveModeToggle';
 
 const exploreLinks = [...NAV_LINKS, { name: 'Give', href: '/give' }];
 
 const socials = [
   { label: 'Facebook', href: SOCIAL_LINKS.facebook, icon: Facebook },
   { label: 'Mixlr live audio', href: SOCIAL_LINKS.mixlr, icon: Radio },
+  { label: 'WhatsApp', href: SOCIAL_LINKS.whatsapp, icon: MessageCircle },
 ];
 
 function ColumnTitle({ children }) {
@@ -59,7 +61,18 @@ export default function Footer() {
           <ul className="space-y-3 text-sm">
             <li className="flex gap-3">
               <MapPin size={15} className="mt-0.5 shrink-0 text-brand-300" />
-              <span>{CHURCH.address.full}</span>
+              <a
+                href={CHURCH.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-white"
+                title="Open location in Google Maps"
+              >
+                <span>{CHURCH.address.full}</span>
+                <span className="mt-1 block text-xs font-semibold text-brand-300 hover:underline">
+                  Open in Google Maps &rarr;
+                </span>
+              </a>
             </li>
             <li className="flex gap-3">
               <Phone size={15} className="mt-0.5 shrink-0 text-brand-300" />
@@ -108,7 +121,11 @@ export default function Footer() {
           <p>
             &copy; {new Date().getFullYear()} {CHURCH.name}. All rights reserved.
           </p>
-          <p className="font-semibold uppercase tracking-[0.3em] text-white/40">Walk in the reality of Christ</p>
+          <div className="flex flex-wrap items-center gap-4">
+            <LiveModeToggle />
+            <span className="hidden h-3 w-px bg-white/20 sm:inline-block" />
+            <p className="font-semibold uppercase tracking-[0.3em] text-white/40">Walk in the reality of Christ</p>
+          </div>
         </div>
       </div>
     </footer>

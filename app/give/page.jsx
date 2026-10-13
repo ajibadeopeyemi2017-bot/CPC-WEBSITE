@@ -12,7 +12,7 @@ import GivingForm from '../../components/give/GivingForm';
 
 export const metadata = {
   title: 'Give | Christ The Potter Church',
-  description: 'Give tithes, offerings and partnership seeds to Christ The Potter Church and OSOM Ministries by direct bank transfer.',
+  description: 'Give tithes, offerings and partnership seeds to Christ The Potter Church and OSOM Ministries securely online via Paystack or direct bank transfer.',
 };
 
 export default function GivePage() {
@@ -25,10 +25,16 @@ export default function GivePage() {
         highlight="Kingdom partnership."
         intro="“Every man according as he purposeth in his heart, so let him give; not grudgingly, or of necessity: for God loveth a cheerful giver.” — 2 Cor. 9:7"
       >
-        <Button variant="white" size="lg" href="#accounts">
-          Bank transfer details
-          <ArrowDown size={14} />
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <Button variant="solid" size="lg" href="#portal">
+            Give Online (Paystack)
+            <ArrowDown size={14} />
+          </Button>
+          <Button variant="white" size="lg" href="#accounts">
+            Bank transfer details
+            <ArrowDown size={14} />
+          </Button>
+        </div>
       </PageHeader>
 
       <section className="py-20 lg:py-28">
@@ -68,7 +74,7 @@ export default function GivePage() {
             </blockquote>
           </div>
 
-          <Card className="self-start p-6 sm:p-10">
+          <Card id="portal" className="scroll-mt-24 self-start p-6 sm:p-10">
             <GivingForm />
           </Card>
         </Container>

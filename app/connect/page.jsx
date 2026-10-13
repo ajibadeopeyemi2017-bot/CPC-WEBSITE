@@ -7,6 +7,7 @@ import Container from '../../components/ui/Container';
 import SectionHeader from '../../components/ui/SectionHeader';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
+import AddToCalendarButton from '../../components/ui/AddToCalendarButton';
 import VolunteerForm from '../../components/connect/VolunteerForm';
 
 export const metadata = {
@@ -69,11 +70,24 @@ export default function ConnectPage() {
                       <dd className="mt-1 text-ink-950">{conf.venue}</dd>
                     </div>
                   </dl>
-                  <div className="mt-auto pt-6">
-                    <Button variant="solid" href={CHURCH.phoneHref}>
+                  <div className="mt-auto flex flex-wrap gap-3 pt-6">
+                    <Button variant="solid" href={CHURCH.phoneHref} className="w-full sm:w-auto">
                       <Phone size={14} />
                       Register · {CHURCH.phone}
                     </Button>
+                    <AddToCalendarButton
+                      customEvent={{
+                        id: `cpc-conf-${conf.id}`,
+                        title: `${conf.title} (${conf.short})`,
+                        description: `Theme: ${conf.theme}\nDate: ${conf.date}\nTime: ${conf.time}\nVenue: ${conf.venue}\nDetails: ${conf.details}`,
+                        location: conf.venue,
+                        date: conf.date,
+                        time: conf.time,
+                      }}
+                      variant="outlineDark"
+                      label="Add to Calendar"
+                      className="w-full sm:w-auto"
+                    />
                   </div>
                 </div>
               </Card>

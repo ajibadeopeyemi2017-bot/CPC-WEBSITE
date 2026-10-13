@@ -4,6 +4,7 @@ import Container from '../ui/Container';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import TextLink from '../ui/TextLink';
+import AddToCalendarButton from '../ui/AddToCalendarButton';
 
 export default function Conferences() {
   return (
@@ -32,8 +33,21 @@ export default function Conferences() {
                 <h3 className="mt-3 font-display text-[1.6rem] uppercase leading-none text-ink-950">{conf.title}</h3>
                 <p className="mt-2 text-sm font-semibold text-ink-950/85">{conf.theme}</p>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-950/65">{conf.summary}</p>
-                <div className="mt-6">
-                  <TextLink href={`/connect#${conf.id}`}>Details &amp; registration</TextLink>
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-ink-950/10">
+                  <TextLink href={`/connect#${conf.id}`}>Details &amp; register</TextLink>
+                  <AddToCalendarButton
+                    customEvent={{
+                      id: `cpc-conf-${conf.id}`,
+                      title: `${conf.title} (${conf.short})`,
+                      description: `Theme: ${conf.theme}\nDate: ${conf.date}\nTime: ${conf.time}\nVenue: ${conf.venue}\nDetails: ${conf.details}`,
+                      location: conf.venue,
+                      date: conf.date,
+                      time: conf.time,
+                    }}
+                    variant="outlineDark"
+                    size="sm"
+                    label="Reminder"
+                  />
                 </div>
               </div>
             </Card>

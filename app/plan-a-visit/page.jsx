@@ -1,4 +1,4 @@
-import { Car, Smile, Users, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Car, Smile, Users, Sparkles, ArrowRight, ShieldCheck, MapPin } from 'lucide-react';
 import { CHURCH, SERVICE_SCHEDULE } from '../../lib/site-config';
 import PageHeader from '../../components/ui/PageHeader';
 import Container from '../../components/ui/Container';
@@ -8,13 +8,13 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Accordion from '../../components/ui/Accordion';
 import VisitForm from '../../components/visit/VisitForm';
+import MapCard from '../../components/ui/MapCard';
+import AddToCalendarButton from '../../components/ui/AddToCalendarButton';
 
 export const metadata = {
   title: "I'm New — Plan a Visit | Christ The Potter Church",
   description: 'Plan your first visit to Christ The Potter Church in Ile-Ife: service times, directions, parking, kids church, and what to expect.',
 };
-
-const MAPS_URL = 'https://maps.google.com/?q=PHCN+Office+Off+Fajuyi+Road+Ile+Ife';
 
 const steps = [
   { title: 'Arrival & welcome', body: 'Arrive 10 – 15 minutes before 8:00 AM. Ushers welcome you at the gate and guide you inside.' },
@@ -64,13 +64,16 @@ export default function PlanAVisitPage() {
         image="/images/pastor-oluwafunminiyi.jpg"
         imageAlt="Apostle Oluwafunminiyi Olufisayo"
       >
-        <Button variant="solid" size="lg" href="#register">
-          Reserve a seat
-          <ArrowRight size={14} />
-        </Button>
-        <Button variant="outlineLight" size="lg" href={MAPS_URL} external>
-          Get directions
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <Button variant="solid" size="lg" href="#register" className="w-full sm:w-auto">
+            Reserve a seat
+            <ArrowRight size={14} />
+          </Button>
+          <AddToCalendarButton variant="white" size="lg" label="Add to Calendar" className="w-full sm:w-auto" />
+          <Button variant="outlineLight" size="lg" href={CHURCH.mapsUrl} external className="w-full sm:w-auto">
+            Get directions
+          </Button>
+        </div>
       </PageHeader>
 
       <section className="py-20 lg:py-28">
@@ -138,7 +141,7 @@ export default function PlanAVisitPage() {
                 Central Ile-Ife, with easy access from the campus gates and city centre.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Button variant="outlineLight" href={MAPS_URL} external>
+                <Button variant="outlineLight" href={CHURCH.mapsUrl} external>
                   Open in Google Maps
                 </Button>
                 <Button variant="outlineLight" href={CHURCH.phoneHref}>
@@ -147,6 +150,22 @@ export default function PlanAVisitPage() {
               </div>
             </div>
           </div>
+        </Container>
+      </section>
+
+      {/* Interactive Google Maps Section */}
+      <section className="py-20 lg:py-28 bg-paper/60 border-b border-ink-950/10">
+        <Container>
+          <div className="mb-10 max-w-xl">
+            <Eyebrow>Find your way</Eyebrow>
+            <h2 className="mt-3 font-display text-[2.4rem] uppercase leading-[0.95] text-ink-950 sm:text-5xl">
+              Directions &amp; Location
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-ink-950/70">
+              Easily navigate to our main auditorium in Ile-Ife. Tap the button below to start GPS navigation on your phone or tablet.
+            </p>
+          </div>
+          <MapCard />
         </Container>
       </section>
 

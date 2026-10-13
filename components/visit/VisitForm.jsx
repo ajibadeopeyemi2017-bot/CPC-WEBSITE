@@ -24,11 +24,37 @@ const emptyForm = {
   specialAssistance: '',
 };
 
-// Not wired to a backend yet: submitting only shows the confirmation state.
 export default function VisitForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const res = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'visit', data: form }),
+      });
+
+      const result = await res.json();
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || 'Failed to submit your RSVP. Please try again or call our helpline.');
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setErrorMessage(err.message || 'Network error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (submitted) {
     return (
@@ -36,7 +62,7 @@ export default function VisitForm() {
         <CheckCircle2 size={40} strokeWidth={1.5} className="text-brand-600" />
         <h2 className="mt-6 font-display text-4xl uppercase leading-none text-ink-950">Your visit is reserved</h2>
         <p className="mt-4 leading-relaxed text-ink-950/70">
-          Thank you, <strong className="text-ink-950">{form.name}</strong>. Our hospitality team has been told to expect
+          Thank you, <strong className="text-ink-950">{form.name}</strong>. Our hospitality team has received your details and has been told to expect
           you for <strong className="text-ink-950">{form.serviceDate}</strong>.
         </p>
         <div className="mt-6 border-l-2 border-brand-600 pl-5 text-sm leading-relaxed text-ink-950/70">
@@ -71,13 +97,13 @@ export default function VisitForm() {
         Planning ahead lets us save you seats, prepare for your children, and greet you by name.
       </p>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          setSubmitted(true);
-        }}
-        className="mt-8 grid gap-5 sm:grid-cols-2"
-      >
+      {errorMessage && (
+        <div className="mt-4 border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {errorMessage}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <Field label="Full name *" id="visit-name">
             <Input id="visit-name" required placeholder="e.g. Grace Adeleke" value={form.name} onChange={set('name')} />
@@ -126,8 +152,14 @@ export default function VisitForm() {
             />
           </Field>
         </div>
-        <Button type="submit" variant="solid" size="lg" className="sm:col-span-2">
-          Confirm my visit
+        <Button
+          type="submit"
+          variant="solid"
+          size="lg"
+          className="sm:col-span-2"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Sending RSVP…' : 'Confirm my visit'}
           <ArrowRight size={14} />
         </Button>
       </form>

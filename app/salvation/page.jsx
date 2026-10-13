@@ -10,8 +10,8 @@ import ConfirmPrayer from '../../components/salvation/ConfirmPrayer';
 import PrayerRequest from '../../components/salvation/PrayerRequest';
 
 export const metadata = {
-  title: 'Salvation & Prayer | Christ The Potter Church',
-  description: 'Give your life to Jesus today, take your next steps in faith, or send a prayer request to the intercessors of Christ The Potter Church.',
+  title: 'Salvation, Prayer & Testimonies | Christ The Potter Church',
+  description: 'Give your life to Jesus today, take your next steps in faith, share your praise reports, or send a prayer request to the intercessors of Christ The Potter Church.',
 };
 
 const nextSteps = [
@@ -28,14 +28,16 @@ export default function SalvationPage() {
         eyebrow="Life in Christ · Altar of grace"
         title="Salvation"
         highlight="& prayer."
-        intro="There is no distance in the spirit. Whether you're taking your first step to receive Jesus or need pastoral intercession for your family, grace is available right now."
+        intro="There is no distance in the spirit. Whether you're taking your first step to receive Jesus, sharing a praise report, or need pastoral intercession, grace is available right now."
       >
-        <Button variant="solid" size="lg" href="#salvation">
-          I gave my life to Christ
-        </Button>
-        <Button variant="outlineLight" size="lg" href="#prayer">
-          Send a prayer request
-        </Button>
+        <div className="flex flex-wrap gap-3">
+          <Button variant="solid" size="lg" href="#salvation">
+            I gave my life to Christ
+          </Button>
+          <Button variant="white" size="lg" href="#prayer">
+            Prayer &amp; Testimonies
+          </Button>
+        </div>
       </PageHeader>
 
       <section id="salvation" className="scroll-mt-20 py-20 lg:py-28">

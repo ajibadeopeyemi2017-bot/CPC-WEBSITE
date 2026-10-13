@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 import { Play, Search, Share2, Check, Radio } from 'lucide-react';
-import { SERMONS, SERMON_CATEGORIES, playSermon } from '../../lib/sermons';
+import { SERMONS, SERMON_CATEGORIES, playSermon, playLiveMixlr } from '../../lib/sermons';
 import { SOCIAL_LINKS } from '../../lib/site-config';
+import { useLiveStatus } from '../../hooks/useLiveStatus';
 import Container from '../ui/Container';
 import Eyebrow from '../ui/Eyebrow';
 import Button from '../ui/Button';
@@ -43,6 +44,7 @@ export default function SermonLibrary() {
   const [category, setCategory] = useState('All');
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(SERMONS[0]);
+  const { isLive } = useLiveStatus();
 
   const q = query.trim().toLowerCase();
   const filtered = SERMONS.filter(
@@ -72,11 +74,16 @@ export default function SermonLibrary() {
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <Button variant="solid" size="lg" onClick={() => playSermon(active)}>
                 <Play size={14} />
-                Listen
+                Listen Now
               </Button>
-              <Button variant="outlineLight" size="lg" href={SOCIAL_LINKS.mixlr} external>
-                <Radio size={14} />
-                Mixlr
+              <Button
+                variant={isLive ? 'solid' : 'outlineLight'}
+                size="lg"
+                onClick={playLiveMixlr}
+                className={isLive ? '!bg-red-600 hover:!bg-red-500 !border-red-500 shadow-lg shadow-red-950/70' : ''}
+              >
+                <span className="live-dot" />
+                {isLive ? 'Service Live: Tune In' : 'Tune to Mixlr Live'}
               </Button>
             </div>
           </div>

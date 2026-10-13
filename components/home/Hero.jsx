@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import clsx from 'clsx';
-import { ArrowRight, Radio } from 'lucide-react';
+import { ArrowRight, Radio, Volume2 } from 'lucide-react';
 import { SOCIAL_LINKS } from '../../lib/site-config';
+import { useLiveStatus } from '../../hooks/useLiveStatus';
+import { playLiveMixlr } from '../../lib/sermons';
 import Container from '../ui/Container';
 import Button from '../ui/Button';
 import PlanVisitTrigger from '../PlanVisitTrigger';
@@ -37,6 +39,7 @@ const SLIDE_MS = 7000;
 
 export default function Hero() {
   const [active, setActive] = useState(0);
+  const { isLive } = useLiveStatus();
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -98,10 +101,26 @@ export default function Hero() {
             Plan a Visit
             <ArrowRight size={14} />
           </PlanVisitTrigger>
-          <Button variant="outlineLight" size="lg" href={SOCIAL_LINKS.mixlr} external className="w-full sm:w-auto">
-            <Radio size={14} />
-            Join Live Online
-          </Button>
+          {isLive ? (
+            <button
+              type="button"
+              onClick={() => playLiveMixlr()}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded bg-red-600 hover:bg-red-500 px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white shadow-xl shadow-red-950/70 transition-all hover:scale-105"
+            >
+              <span className="live-dot !h-2.5 !w-2.5" />
+              <Volume2 size={15} />
+              <span>Listen Live Now</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => playLiveMixlr()}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded border border-white/40 bg-white/10 hover:bg-white hover:text-ink-950 px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition-all"
+            >
+              <Radio size={14} />
+              <span>Join Live Online</span>
+            </button>
+          )}
           <Button variant="outlineLight" size="lg" href="/sermons" className="w-full sm:w-auto">
             Sermons
           </Button>

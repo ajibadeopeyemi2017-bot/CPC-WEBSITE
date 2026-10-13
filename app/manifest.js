@@ -1,0 +1,53 @@
+export default function manifest() {
+  return {
+    name: 'Christ The Potter Church',
+    short_name: 'CPC Church',
+    description:
+      'Christ The Potter Church (CPC) — Teaching men to walk in the reality of who Christ is. Service times, sermon audio, Mixlr live broadcast, and online giving in Ile-Ife.',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#fbfbfa',
+    theme_color: '#0f4a17',
+    orientation: 'portrait',
+    icons: [
+      {
+        src: '/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'maskable any',
+      },
+      {
+        src: '/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable any',
+      },
+    ],
+    shortcuts: [
+      {
+        name: 'Sunday Worship Service',
+        short_name: 'Sunday Service',
+        description: 'Plan your visit for Sunday 8:00 AM worship',
+        url: '/plan-a-visit',
+      },
+      {
+        name: 'Apostolic Sermons',
+        short_name: 'Sermons',
+        description: 'Stream audio messages by Apostle Olufisayo',
+        url: '/sermons',
+      },
+      {
+        name: 'Online Giving',
+        short_name: 'Give',
+        description: 'Give tithes and offerings via Paystack',
+        url: '/give',
+      },
+      {
+        name: 'Prayer Requests',
+        short_name: 'Prayer',
+        description: 'Submit an intercession or prayer burden',
+        url: '/salvation',
+      },
+    ],
+  };
+}

@@ -4,14 +4,17 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { Menu, X, Radio, Phone } from 'lucide-react';
+import { Menu, X, Radio, Phone, Volume2 } from 'lucide-react';
 import { CHURCH, NAV_LINKS, SOCIAL_LINKS } from '../lib/site-config';
+import { useLiveStatus } from '../hooks/useLiveStatus';
+import { playLiveMixlr } from '../lib/sermons';
 import Logo from './Logo';
 import Button from './ui/Button';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { isLive, activeService } = useLiveStatus();
 
   useEffect(() => {
     setIsOpen(false);
@@ -51,6 +54,17 @@ export default function Navbar() {
               </Link>
             );
           })}
+          {isLive && (
+            <button
+              type="button"
+              onClick={() => playLiveMixlr()}
+              className="ml-2 inline-flex items-center gap-2 rounded-full border border-red-300 bg-red-600 px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-white shadow-lg shadow-red-900/50 transition-all hover:bg-red-500 hover:scale-105"
+              title="Service in session — Click to listen live on Mixlr"
+            >
+              <span className="live-dot !h-2 !w-2" />
+              <span>Live Now</span>
+            </button>
+          )}
           <Button variant="white" size="md" href="/give" className="ml-2">
             Give
           </Button>
@@ -61,8 +75,13 @@ export default function Navbar() {
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Open menu"
           aria-expanded={isOpen}
-          className="flex h-10 w-10 items-center justify-center border border-white/40 lg:hidden"
+          className="relative flex h-10 w-10 items-center justify-center border border-white/40 lg:hidden"
         >
+          {isLive && (
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="live-dot !h-3 !w-3" />
+            </span>
+          )}
           <Menu size={20} />
         </button>
       </div>
@@ -80,6 +99,37 @@ export default function Navbar() {
               <X size={20} />
             </button>
           </div>
+
+          {/* Mobile Live Service Card */}
+          {isLive && activeService && (
+            <div className="mt-3 mb-2 rounded-xl border border-red-500/50 bg-gradient-to-br from-red-950/80 via-ink-900 to-black p-4 text-white shadow-xl">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2 text-[0.68rem] font-bold uppercase tracking-wider text-red-300">
+                  <span className="live-dot !h-2 !w-2" />
+                  Service In Progress
+                </span>
+                <span className="text-[0.62rem] uppercase tracking-wider text-white/60">Live from Ile-Ife</span>
+              </div>
+              <p className="mt-1 font-display text-2xl uppercase tracking-wide text-white">
+                {activeService.name}
+              </p>
+              <p className="text-xs text-white/70">
+                Apostle Oluwafunminiyi Olufisayo ministering
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpen(false);
+                  playLiveMixlr();
+                }}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md hover:bg-red-500 transition-colors"
+              >
+                <Volume2 size={15} />
+                Listen Live on Mixlr
+              </button>
+            </div>
+          )}
+
           <nav className="mt-4 flex flex-1 flex-col" aria-label="Mobile">
             {NAV_LINKS.map((item) => {
               const active = pathname === item.href;
@@ -103,9 +153,17 @@ export default function Navbar() {
             <Button variant="solid" size="lg" href="/give" onClick={() => setIsOpen(false)}>
               Give
             </Button>
-            <Button variant="outlineLight" size="lg" href={SOCIAL_LINKS.mixlr} external>
-              <Radio size={14} />
-              Join Live Online
+            <Button
+              variant={isLive ? 'solid' : 'outlineLight'}
+              size="lg"
+              onClick={() => {
+                setIsOpen(false);
+                playLiveMixlr();
+              }}
+              className={isLive ? '!bg-red-600 hover:!bg-red-500 border-none' : ''}
+            >
+              {isLive ? <Volume2 size={15} /> : <Radio size={14} />}
+              {isLive ? 'Listen Live Now' : 'Join Live Online'}
             </Button>
             <Button variant="outlineLight" size="lg" href={CHURCH.phoneHref}>
               <Phone size={14} />

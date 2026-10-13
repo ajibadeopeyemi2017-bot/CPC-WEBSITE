@@ -1,11 +1,10 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, MapPin, Navigation } from 'lucide-react';
 import { CHURCH, SERVICE_SCHEDULE } from '../../lib/site-config';
 import Container from '../ui/Container';
 import Eyebrow from '../ui/Eyebrow';
 import Button from '../ui/Button';
 import LiveCountdown from '../LiveCountdown';
-
-const MAPS_URL = 'https://maps.google.com/?q=PHCN+Office+Off+Fajuyi+Road+Ile+Ife';
+import AddToCalendarButton from '../ui/AddToCalendarButton';
 
 const compact = (time) => time.replace(' ', '');
 
@@ -37,8 +36,9 @@ export default function ServiceTimes() {
             ))}
           </ul>
 
-          <div className="mt-8">
+          <div className="mt-8 flex flex-wrap items-center gap-4">
             <LiveCountdown />
+            <AddToCalendarButton variant="white" label="Add to Calendar" />
           </div>
         </div>
 
@@ -53,9 +53,13 @@ export default function ServiceTimes() {
             {CHURCH.address.full}. There&apos;s easy parking on-site, and our hospitality team waits at the entrance
             to welcome you.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Button variant="outlineLight" href={MAPS_URL} external>
-              Get directions
+          <div className="mt-3 text-xs text-white/80 bg-white/10 p-3 border-l-2 border-brand-300">
+            <strong className="text-white">Landmark:</strong> {CHURCH.address.landmark}
+          </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button variant="outlineLight" href={CHURCH.mapsUrl} external>
+              <Navigation size={14} />
+              Google Maps Directions
               <ArrowRight size={14} />
             </Button>
             <Button variant="outlineLight" href={CHURCH.phoneHref}>
