@@ -5,6 +5,8 @@ import Button from '../../components/ui/Button';
 import CtaBand from '../../components/ui/CtaBand';
 import LiveCountdown from '../../components/LiveCountdown';
 import SermonLibrary from '../../components/sermons/SermonLibrary';
+import SchemaOrg from '../../components/seo/SchemaOrg';
+import { getSermonsJsonLd } from '../../lib/seo';
 
 export const metadata = {
   title: 'Sermons | Christ The Potter Church',
@@ -12,8 +14,11 @@ export const metadata = {
 };
 
 export default function SermonsPage() {
+  const sermonsSchema = getSermonsJsonLd();
+
   return (
     <>
+      <SchemaOrg data={sermonsSchema} />
       <PageHeader
         eyebrow="Watch & listen"
         title="Food for"

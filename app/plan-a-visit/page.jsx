@@ -12,7 +12,7 @@ import MapCard from '../../components/ui/MapCard';
 import AddToCalendarButton from '../../components/ui/AddToCalendarButton';
 
 export const metadata = {
-  title: "I'm New — Plan a Visit | Christ The Potter Church",
+  title: "I'm Visiting — Plan a Visit | Christ The Potter Church",
   description: 'Plan your first visit to Christ The Potter Church in Ile-Ife: service times, directions, parking, kids church, and what to expect.',
 };
 
@@ -57,7 +57,7 @@ export default function PlanAVisitPage() {
   return (
     <>
       <PageHeader
-        eyebrow="I'm new"
+        eyebrow="I'm visiting"
         title="Plan your visit."
         highlight="Family coming home."
         intro="From the moment you step onto our grounds in Ile-Ife, you're not a guest — you're family. Let us prepare for your arrival."

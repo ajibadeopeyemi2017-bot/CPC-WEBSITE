@@ -73,7 +73,7 @@ export default function SetMan() {
             </ul>
 
             <Button variant="solid" href="/about" className="mt-9">
-              Read his story
+              More About Us
               <ArrowRight size={14} />
             </Button>
           </div>

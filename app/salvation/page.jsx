@@ -84,12 +84,19 @@ export default function SalvationPage() {
             <div className="mt-8 flex flex-col gap-5 border border-brand-600/30 bg-brand-50 p-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-display text-xl uppercase text-brand-800">Want a pastor to walk with you?</p>
-                <p className="mt-1 text-sm text-brand-700">Call or WhatsApp the pastoral counselling desk on {CHURCH.phone}.</p>
+                <p className="mt-1 text-sm text-brand-700">
+                  Call {CHURCH.phone} or chat our pastoral WhatsApp lines on 0706 270 9694 and 0816 377 6464.
+                </p>
               </div>
-              <Button variant="solid" href={CHURCH.phoneHref}>
-                <Phone size={14} />
-                Call a pastor
-              </Button>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <Button variant="solid" href={CHURCH.phoneHref}>
+                  <Phone size={14} />
+                  Call {CHURCH.phone}
+                </Button>
+                <Button variant="outlineDark" href="https://wa.me/2347062709694" target="_blank" rel="noopener noreferrer">
+                  WhatsApp Us
+                </Button>
+              </div>
             </div>
           </div>
         </Container>

@@ -14,6 +14,7 @@ import {
   RefreshCw,
   ShieldCheck,
   Sparkles,
+  Download,
 } from 'lucide-react';
 import {
   GIVING_CATEGORIES,
@@ -27,6 +28,7 @@ import Button from '../ui/Button';
 import Eyebrow from '../ui/Eyebrow';
 import { Field, Input, Label } from '../ui/Field';
 import CopyButton from './CopyButton';
+import { toast } from '../ui/Toast';
 
 const optionClasses = (selected) =>
   clsx(
@@ -92,9 +94,15 @@ export default function GivingForm() {
         simulated: data.data?.simulated,
       });
       setError(null);
+      toast.success(
+        `Covenant seed of ${symbol}${Number(paymentPayload.amount).toLocaleString()} confirmed! Grace abound toward you.`,
+        'Payment Verified'
+      );
     } catch (err) {
       console.error('Verification error:', err);
-      setError(err.message || 'Payment verification failed. Please contact the church finance desk.');
+      const errMsg = err.message || 'Payment verification failed. Please contact the church finance desk.';
+      setError(errMsg);
+      toast.error(errMsg, 'Payment Verification Issue');
     } finally {
       setIsProcessing(false);
     }
@@ -179,6 +187,55 @@ export default function GivingForm() {
   const handlePrint = () => {
     if (typeof window !== 'undefined') {
       window.print();
+    }
+  };
+
+  const handleDownloadReceipt = () => {
+    if (!receipt) return;
+    const formattedDate = new Date(receipt.paidAt).toLocaleDateString('en-GB', {
+      timeZone: 'Africa/Lagos',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const content = `=====================================================
+CHRIST THE POTTER CHURCH (CPC) & OSOM MINISTRIES
+76B, PHCN Office (Upper Floor), Off Fajuyi Road, Ile-Ife, Nigeria
+OFFICIAL KINGDOM GIVING RECEIPT
+=====================================================
+Receipt Reference: ${receipt.reference}
+Amount:            ${symbol}${Number(receipt.amount).toLocaleString('en-US')} ${receipt.currency}
+Category:          ${receipt.category}
+Donor Name:        ${receipt.donorName}
+Donor Email:       ${receipt.email || 'N/A'}
+Date / Time (WAT): ${formattedDate}
+Status:            VERIFIED & CONFIRMED (Paystack)
+-----------------------------------------------------
+"And God is able to make all grace abound toward you;
+that ye, always having all sufficiency in all things,
+may abound to every good work." — 2 Corinthians 9:8
+-----------------------------------------------------
+Signed:
+Apostle Oluwafunminiyi Olufisayo
+Lead Pastor, Christ The Potter Church
+=====================================================`;
+
+    try {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `CPC-Giving-Receipt-${receipt.reference}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 15000);
+      toast.success('Giving receipt downloaded to your device', 'Receipt Saved');
+    } catch {
+      toast.error('Could not download receipt automatically. Please print receipt instead.');
     }
   };
 
@@ -269,6 +326,14 @@ export default function GivingForm() {
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={handleDownloadReceipt}
+            className="inline-flex flex-1 items-center justify-center gap-2 border border-brand-600 bg-brand-50 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-brand-800 hover:bg-brand-100 transition-colors"
+          >
+            <Download size={15} />
+            Download Receipt
+          </button>
           <button
             type="button"
             onClick={handlePrint}

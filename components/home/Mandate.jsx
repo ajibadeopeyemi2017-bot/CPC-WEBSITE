@@ -17,7 +17,7 @@ export default function Mandate() {
           prayer, and the order of God — so that every believer is trained for life and destiny.
         </p>
         <Button variant="outlineLight" href="/about" className="mt-10">
-          Who we are
+          About us
           <ArrowRight size={14} />
         </Button>
       </Container>

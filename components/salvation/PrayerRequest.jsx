@@ -7,6 +7,7 @@ import Button from '../ui/Button';
 import Card from '../ui/Card';
 import Eyebrow from '../ui/Eyebrow';
 import { Field, Input, Select, Textarea } from '../ui/Field';
+import { toast } from '../ui/Toast';
 
 const PRAYER_CATEGORIES = [
   'Spiritual Growth & Fire',
@@ -166,6 +167,7 @@ export default function PrayerRequest() {
     if (prayed[id]) return;
     setPrayed({ ...prayed, [id]: true });
     setPrayerWall(prayerWall.map((p) => (p.id === id ? { ...p, amens: (p.amens || 0) + 1 } : p)));
+    toast.success('Amen! You have joined in spiritual agreement with this request.', 'Agreement Registered');
     fetch('/api/testimonies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -203,8 +205,14 @@ export default function PrayerRequest() {
       }
 
       setSubmittedPrayerName(prayerForm.name.trim() || 'beloved');
+      toast.success(
+        'Your prayer petition has been received and presented before the CPC intercession altar.',
+        'Prayer Request Sent'
+      );
     } catch (err) {
-      setPrayerError(err.message || 'Network error. Please try again.');
+      const msg = err.message || 'Network error. Please try again.';
+      setPrayerError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmittingPrayer(false);
     }
@@ -216,6 +224,7 @@ export default function PrayerRequest() {
     if (praised[id]) return;
     setPraised({ ...praised, [id]: true });
     setTestimonyWall(testimonyWall.map((t) => (t.id === id ? { ...t, praises: (t.praises || 0) + 1 } : t)));
+    toast.success('Hallelujah! Praise offered to God for this testimony.', 'Praise Offered');
     fetch('/api/testimonies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -252,8 +261,11 @@ export default function PrayerRequest() {
       };
       setTestimonyWall((prev) => [newTestimony, ...prev]);
       setSubmittedTestimonyName(testimonyForm.name.trim() || 'Grateful Soul');
+      toast.success('Glory to God! Your testimony has been recorded and posted to the altar.', 'Testimony Submitted');
     } catch (err) {
-      setTestimonyError(err.message || 'Could not submit praise report. Please try again.');
+      const msg = err.message || 'Could not submit praise report. Please try again.';
+      setTestimonyError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmittingTestimony(false);
     }

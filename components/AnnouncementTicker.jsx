@@ -9,14 +9,14 @@ import { playLiveMixlr } from '../lib/sermons';
 
 const announcements = [
   {
-    tag: 'MINISTERIAL CONVOCATION',
+    tag: 'MINISTERIAL CONFERENCE',
     title: 'Kingdom Young Ministers Conference (KYMC 2026)',
     subtitle: 'Theme: "The Man That the Lord Will Work With (Part Two)" | Sept 24th - 26th, 2026',
     link: '/connect#conferences',
     linkText: 'Register / Details'
   },
   {
-    tag: 'AGOTE 2025 CONVOCATION',
+    tag: 'AGOTE 2025 CONFERENCE',
     title: 'Annual Gathering of the Eagles (AGOTE 2025)',
     subtitle: 'Theme: "DIVINE FLOW" | Dec 19th - 20th, 2025 with Apostle Goke Ogunleye & Apostle Oluwafunminiyi',
     link: '/connect#conferences',

@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getPrayers, getTestimonies, togglePrayerAmen, toggleTestimonyPraise } from '../../../lib/db';
+import { checkRateLimit, getClientIp } from '../../../lib/rate-limit';
+import { sanitizeText } from '../../../lib/sanitize';
 
 export const runtime = 'nodejs';
 
@@ -8,8 +10,11 @@ export const runtime = 'nodejs';
  */
 export async function GET() {
   try {
-    const prayers = getPrayers().filter((p) => !p.isConfidential);
-    const testimonies = getTestimonies({ approvedOnly: true });
+    const [allPrayers, testimonies] = await Promise.all([
+      getPrayers(),
+      getTestimonies({ approvedOnly: true }),
+    ]);
+    const prayers = (allPrayers || []).filter((p) => !p.isConfidential);
 
     return NextResponse.json({
       success: true,
@@ -25,10 +30,20 @@ export async function GET() {
 }
 
 /**
- * Handle "Amen" agreement and "Praise" reactions
+ * Handle "Amen" agreement and "Praise" reactions with rate limiting
  */
 export async function POST(request) {
   try {
+    const clientIp = getClientIp(request);
+    // Allow up to 30 reaction clicks per minute per client IP to prevent bot inflation
+    const rateCheck = checkRateLimit(`reaction-${clientIp}`, 30, 60);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { success: false, error: 'Too many reactions. Please wait a moment.' },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { action, id } = body;
 
@@ -39,13 +54,15 @@ export async function POST(request) {
       );
     }
 
+    const cleanId = sanitizeText(id, 64);
+
     if (action === 'amen') {
-      const updated = togglePrayerAmen(id);
+      const updated = await togglePrayerAmen(cleanId);
       return NextResponse.json({ success: true, updated });
     }
 
     if (action === 'praise') {
-      const updated = toggleTestimonyPraise(id);
+      const updated = await toggleTestimonyPraise(cleanId);
       return NextResponse.json({ success: true, updated });
     }
 
@@ -60,3 +77,4 @@ export async function POST(request) {
     );
   }
 }
+

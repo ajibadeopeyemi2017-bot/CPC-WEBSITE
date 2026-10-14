@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Sparkles, MapPin, Calendar, HeartHandshake } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, MapPin, Calendar, HeartHandshake, CheckCircle2, ExternalLink } from 'lucide-react';
 import clsx from 'clsx';
 import { CHURCH } from '../lib/site-config';
+import { WHATSAPP_LINES, dispatchToBothWhatsAppLines, getWhatsAppLinks } from '../lib/whatsapp';
 
 const QUICK_TOPICS = [
   {
@@ -23,8 +24,8 @@ const QUICK_TOPICS = [
   },
   {
     icon: Sparkles,
-    label: 'KYMC / AGOTE / RDS conferences',
-    message: 'Hello, I would like to inquire about upcoming conferences and registration details.',
+    label: 'Conferences & schools registration',
+    message: 'Hello Christ The Potter Church, I would like to inquire about upcoming conferences, schools, and registration details.',
   },
 ];
 
@@ -32,6 +33,7 @@ export default function WhatsAppButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [customMessage, setCustomMessage] = useState('');
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [dispatchedMessage, setDispatchedMessage] = useState(null);
   const cardRef = useRef(null);
 
   // Close when clicking outside
@@ -52,12 +54,18 @@ export default function WhatsAppButton() {
     }
   }, [isOpen]);
 
-  const openWhatsApp = (msg) => {
+  const sendToBoth = (msg) => {
     const textToSend = msg || customMessage.trim() || 'Hello Christ The Potter Church, I am reaching out from your website.';
-    const encoded = encodeURIComponent(textToSend);
-    const url = `https://wa.me/${CHURCH.whatsapp}?text=${encoded}`;
+    const links = dispatchToBothWhatsAppLines(textToSend);
+    setDispatchedMessage({
+      text: textToSend,
+      links,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    });
+  };
+
+  const openSingle = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');
-    setIsOpen(false);
   };
 
   return (
@@ -90,7 +98,7 @@ export default function WhatsAppButton() {
                   </h3>
                   <p className="flex items-center gap-1.5 text-xs text-white/80">
                     <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#22c55e] animate-pulse" />
-                    Protocol &amp; Pastoral Desk Online
+                    Pastoral Desk &bull; Both Lines Online
                   </p>
                 </div>
               </div>
@@ -103,78 +111,129 @@ export default function WhatsAppButton() {
                 <X size={18} />
               </button>
             </div>
+
+            {/* Dual-Number Badges */}
+            <div className="mt-3 flex flex-wrap gap-2 text-[0.62rem] font-bold uppercase tracking-wider text-white/90">
+              <span className="inline-flex items-center gap-1 rounded bg-white/15 px-2 py-0.5">
+                Line 1: 0706 270 9694
+              </span>
+              <span className="inline-flex items-center gap-1 rounded bg-white/15 px-2 py-0.5">
+                Line 2: 0816 377 6464
+              </span>
+            </div>
           </div>
 
           {/* Body */}
           <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto bg-paper/40">
-            {/* Welcome greeting card */}
-            <div className="rounded-md border border-ink-950/10 bg-white p-3.5 text-xs leading-relaxed text-ink-950 shadow-sm">
-              <p className="font-semibold text-brand-800">Peace and grace to you!</p>
-              <p className="mt-1 text-ink-950/75">
-                Welcome to Christ The Potter Church. How can we assist, guide, or pray with you today? Tap any topic
-                below to chat directly with our team on WhatsApp:
-              </p>
-            </div>
-
-            {/* Quick Topic Chips */}
-            <div className="space-y-2">
-              <p className="text-[0.62rem] font-bold uppercase tracking-[0.2em] text-ink-950/60">
-                Frequently Asked Topics:
-              </p>
-              <div className="grid gap-1.5">
-                {QUICK_TOPICS.map((topic, i) => {
-                  const Icon = topic.icon;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => openWhatsApp(topic.message)}
-                      className="group flex w-full items-center gap-2.5 rounded border border-ink-950/15 bg-white p-2.5 text-left text-xs font-medium text-ink-950 transition-all hover:border-[#22c55e] hover:bg-[#eef7ea] hover:text-[#0f4a17]"
-                    >
-                      <Icon size={14} className="shrink-0 text-brand-700 group-hover:text-[#22c55e]" />
-                      <span className="flex-1">{topic.label}</span>
-                      <Send size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#0f4a17]" />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Custom Message Field */}
-            <div className="pt-2 border-t border-ink-950/10">
-              <label htmlFor="custom-wa-msg" className="block text-[0.62rem] font-bold uppercase tracking-[0.2em] text-ink-950/60 mb-1.5">
-                Or Type a Specific Question:
-              </label>
-              <div className="flex gap-2">
-                <input
-                  id="custom-wa-msg"
-                  type="text"
-                  placeholder="Type your message here..."
-                  value={customMessage}
-                  onChange={(e) => setCustomMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      openWhatsApp(customMessage);
-                    }
-                  }}
-                  className="flex-1 rounded border border-ink-950/20 bg-white px-3 py-2 text-xs text-ink-950 placeholder:text-ink-950/40 focus:border-[#22c55e] focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
-                />
+            {/* Status if recently dispatched */}
+            {dispatchedMessage ? (
+              <div className="rounded-md border border-emerald-500/30 bg-emerald-50 p-3 text-xs text-emerald-950 animate-in fade-in duration-200">
+                <div className="flex items-center gap-2 font-bold text-[#0f4a17]">
+                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                  <span>Dispatched to both pastoral lines!</span>
+                </div>
+                <p className="mt-1 text-[0.72rem] text-ink-950/70">
+                  Chats opened for both numbers. If a browser popup was blocked, tap either line below to open directly:
+                </p>
+                <div className="mt-2.5 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => openSingle(dispatchedMessage.links.line1.url)}
+                    className="flex items-center justify-center gap-1.5 rounded bg-[#0f4a17] px-2 py-1.5 text-[0.68rem] font-bold text-white hover:bg-[#156320]"
+                  >
+                    <span>0706 270 9694</span>
+                    <ExternalLink size={11} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => openSingle(dispatchedMessage.links.line2.url)}
+                    className="flex items-center justify-center gap-1.5 rounded bg-[#0f4a17] px-2 py-1.5 text-[0.68rem] font-bold text-white hover:bg-[#156320]"
+                  >
+                    <span>0816 377 6464</span>
+                    <ExternalLink size={11} />
+                  </button>
+                </div>
                 <button
                   type="button"
-                  onClick={() => openWhatsApp(customMessage)}
-                  aria-label="Send custom message on WhatsApp"
-                  className="inline-flex items-center justify-center rounded bg-[#25D366] px-3.5 py-2 text-white hover:bg-[#20ba59] transition-colors"
+                  onClick={() => setDispatchedMessage(null)}
+                  className="mt-2 text-[0.65rem] underline text-ink-950/60 hover:text-ink-950"
                 >
-                  <Send size={14} />
+                  Send another inquiry
                 </button>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* Welcome greeting card */}
+                <div className="rounded-md border border-ink-950/10 bg-white p-3.5 text-xs leading-relaxed text-ink-950 shadow-sm">
+                  <p className="font-semibold text-brand-800">Peace and grace to you!</p>
+                  <p className="mt-1 text-ink-950/75">
+                    Messages are delivered simultaneously to both official pastoral WhatsApp numbers:
+                    <strong className="block text-brand-800 mt-0.5">0706 270 9694 &amp; 0816 377 6464</strong>
+                  </p>
+                </div>
+
+                {/* Quick Topic Chips */}
+                <div className="space-y-2">
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.2em] text-ink-950/60">
+                    Frequently Asked Topics (Sends to Both Lines):
+                  </p>
+                  <div className="grid gap-1.5">
+                    {QUICK_TOPICS.map((topic, i) => {
+                      const Icon = topic.icon;
+                      return (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => sendToBoth(topic.message)}
+                          className="group flex w-full items-center gap-2.5 rounded border border-ink-950/15 bg-white p-2.5 text-left text-xs font-medium text-ink-950 transition-all hover:border-[#22c55e] hover:bg-[#eef7ea] hover:text-[#0f4a17]"
+                        >
+                          <Icon size={14} className="shrink-0 text-brand-700 group-hover:text-[#22c55e]" />
+                          <span className="flex-1">{topic.label}</span>
+                          <Send size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#0f4a17]" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Custom Message Field */}
+                <div className="pt-2 border-t border-ink-950/10">
+                  <label htmlFor="custom-wa-msg" className="block text-[0.62rem] font-bold uppercase tracking-[0.2em] text-ink-950/60 mb-1.5">
+                    Or Type a Specific Question:
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      id="custom-wa-msg"
+                      type="text"
+                      placeholder="Type your message here..."
+                      value={customMessage}
+                      onChange={(e) => setCustomMessage(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          sendToBoth(customMessage);
+                        }
+                      }}
+                      className="flex-1 rounded border border-ink-950/20 bg-white px-3 py-2 text-xs text-ink-950 placeholder:text-ink-950/40 focus:border-[#22c55e] focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => sendToBoth(customMessage)}
+                      aria-label="Send message to both WhatsApp numbers"
+                      className="inline-flex items-center justify-center rounded bg-[#25D366] px-3.5 py-2 text-white hover:bg-[#20ba59] transition-colors"
+                      title="Send to both lines: 07062709694 & 08163776464"
+                    >
+                      <Send size={14} />
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Footer banner */}
-          <div className="bg-paper border-t border-ink-950/10 px-4 py-2.5 text-center text-[0.68rem] text-ink-950/60">
-            Replies typically within minutes &bull; Confidential &bull; Official CPC Desk
+          <div className="bg-paper border-t border-ink-950/10 px-4 py-2 text-center text-[0.66rem] text-ink-950/65">
+            Both 07062709694 &amp; 08163776464 receive your chat &bull; Call: {CHURCH.phone}
           </div>
         </div>
       )}
@@ -214,7 +273,7 @@ export default function WhatsAppButton() {
         {/* First-time visitor subtle attention badge */}
         {!hasInteracted && (
           <span className="hidden sm:inline-block rounded-full bg-white/20 px-1.5 py-0.5 text-[0.58rem] font-semibold uppercase tracking-wider text-white">
-            Online
+            2 Lines Online
           </span>
         )}
       </button>

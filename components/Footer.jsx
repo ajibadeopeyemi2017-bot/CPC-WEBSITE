@@ -76,9 +76,27 @@ export default function Footer() {
             </li>
             <li className="flex gap-3">
               <Phone size={15} className="mt-0.5 shrink-0 text-brand-300" />
-              <a href={CHURCH.phoneHref} className="hover:text-white">
-                {CHURCH.phone}
-              </a>
+              <div>
+                <a href={CHURCH.phoneHref} className="hover:text-white">
+                  {CHURCH.phone}
+                </a>
+                <span className="block text-[0.68rem] text-white/55">Direct Call Line</span>
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <MessageCircle size={15} className="mt-0.5 shrink-0 text-brand-300" />
+              <div>
+                <div className="space-x-2">
+                  <a href="https://wa.me/2347062709694" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                    0706 270 9694
+                  </a>
+                  <span>·</span>
+                  <a href="https://wa.me/2348163776464" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                    0816 377 6464
+                  </a>
+                </div>
+                <span className="block text-[0.68rem] text-white/55">WhatsApp Helpdesks</span>
+              </div>
             </li>
             <li className="flex gap-3">
               <Mail size={15} className="mt-0.5 shrink-0 text-brand-300" />

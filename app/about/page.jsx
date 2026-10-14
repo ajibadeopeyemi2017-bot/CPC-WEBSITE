@@ -10,7 +10,7 @@ import Button from '../../components/ui/Button';
 import CtaBand from '../../components/ui/CtaBand';
 
 export const metadata = {
-  title: 'Who We Are | Christ The Potter Church',
+  title: 'About Us | Christ The Potter Church',
   description:
     'The vision, doctrine, leadership and order of Christ The Potter Church, Ile-Ife — teaching men to walk in the reality of who Christ is.',
 };
@@ -38,7 +38,7 @@ const blocks = [
   {
     label: 'Block 01 · Kingdom unity',
     title: 'Body of Christ & Ministers',
-    body: 'National convocations (KYMC & AGOTE) where fathers and seasoned ministers impart young leaders, giving balance to the coming generation so they avoid error.',
+    body: 'National conferences (KYMC & AGOTE) where fathers and seasoned ministers impart young leaders, giving balance to the coming generation so they avoid error.',
   },
   {
     label: 'Block 02 · Purpose & vocation',
@@ -163,7 +163,7 @@ export default function AboutPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Who we are"
+        eyebrow="About us"
         title="Moulded by truth."
         highlight="Walking in reality."
         intro={`“${CHURCH.tagline}” A biblical, prophetic, and apostolic house in Ile-Ife, Nigeria, committed to deep doctrine, righteous character, and divine destiny.`}

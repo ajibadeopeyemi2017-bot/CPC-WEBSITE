@@ -19,6 +19,7 @@ import {
   ShieldAlert,
   ArrowRight,
   RefreshCw,
+  Database,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { CHURCH } from '../../lib/site-config';
@@ -259,6 +260,22 @@ export default function AdminPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            {data?.dbStatus && (
+              <span
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-brand-800/80 px-2.5 py-1 text-[0.66rem] font-medium text-brand-100"
+                title={`Last synced: ${new Date(data.dbStatus.lastSynced).toLocaleTimeString()}`}
+              >
+                <span
+                  className={clsx(
+                    'h-2 w-2 rounded-full',
+                    data.dbStatus.isCloud ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                  )}
+                />
+                <Database size={11} className="opacity-80" />
+                <span>{data.dbStatus.label}</span>
+              </span>
+            )}
+
             <button
               type="button"
               onClick={() => fetchAdminData(token)}
@@ -280,6 +297,7 @@ export default function AdminPage() {
           </div>
         </div>
       </header>
+
 
       {/* Main Container */}
       <main className="mx-auto max-w-7xl px-5 pt-8 sm:px-8">

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { saveDonation } from '../../../../lib/db';
 import { CHURCH } from '../../../../lib/site-config';
+import { sanitizeText, sanitizeEmail } from '../../../../lib/sanitize';
 
 export const runtime = 'nodejs';
 
@@ -23,9 +24,16 @@ export async function POST(request) {
         .update(rawBody)
         .digest('hex');
 
-      if (hash !== signature) {
+      const hashBuf = Buffer.from(hash, 'utf-8');
+      const sigBuf = Buffer.from(signature || '', 'utf-8');
+
+      if (hashBuf.length !== sigBuf.length || !crypto.timingSafeEqual(hashBuf, sigBuf)) {
         console.warn('[API/PAYSTACK/WEBHOOK] Invalid HMAC signature received.');
         return NextResponse.json({ message: 'Invalid signature' }, { status: 401 });
+      }
+    } else {
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ message: 'Webhook signing key not configured' }, { status: 503 });
       }
     }
 
@@ -34,10 +42,10 @@ export async function POST(request) {
 
     // 2. Handle successful charge event
     if (event === 'charge.success') {
-      const reference = data.reference;
-      const amount = data.amount / 100; // Convert from kobo/cents
-      const currency = data.currency || 'NGN';
-      const email = data.customer?.email || '';
+      const reference = sanitizeText(data.reference, 100);
+      const amount = (Number(data.amount) || 0) / 100; // Convert from kobo/cents
+      const currency = data.currency === 'USD' ? 'USD' : 'NGN';
+      const email = sanitizeEmail(data.customer?.email);
 
       // Extract custom metadata fields configured in openPaystackPayment
       let donorName = 'Anonymous Giver';
@@ -46,19 +54,19 @@ export async function POST(request) {
       if (data.metadata?.custom_fields && Array.isArray(data.metadata.custom_fields)) {
         const nameField = data.metadata.custom_fields.find((f) => f.variable_name === 'donor_name');
         const catField = data.metadata.custom_fields.find((f) => f.variable_name === 'giving_category');
-        if (nameField && nameField.value) donorName = nameField.value;
-        if (catField && catField.value) category = catField.value;
+        if (nameField && nameField.value) donorName = sanitizeText(nameField.value, 100);
+        if (catField && catField.value) category = sanitizeText(catField.value, 80);
       }
 
       // 3. Persist the giving transaction into the database
-      const recorded = saveDonation({
+      const recorded = await saveDonation({
         reference,
         amount,
         currency,
         donorName,
         email,
         category,
-        channel: data.channel || 'paystack_webhook',
+        channel: sanitizeText(data.channel, 50) || 'paystack_webhook',
         verified: true,
         status: 'success',
         paidAt: data.paid_at || new Date().toISOString(),
@@ -109,3 +117,4 @@ Paid At: ${data.paid_at || new Date().toISOString()}
     );
   }
 }
+

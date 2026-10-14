@@ -3,14 +3,16 @@
 import { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import clsx from 'clsx';
+import { toast } from '../ui/Toast';
 
-export default function CopyButton({ value, label = 'Copy', tone = 'dark' }) {
+export default function CopyButton({ value, label = 'Copy', tone = 'dark', toastMessage }) {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);
+      toast.success(toastMessage || `Copied "${value}" to clipboard`);
       setTimeout(() => setCopied(false), 2500);
     } catch {
       // Clipboard can be blocked (e.g. non-HTTPS); the number is still visible to copy by hand.

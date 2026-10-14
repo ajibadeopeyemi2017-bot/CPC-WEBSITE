@@ -8,7 +8,10 @@ import PlanVisitModal from '../components/PlanVisitModal';
 import WhatsAppButton from '../components/WhatsAppButton';
 import LiveFloatingBadge from '../components/LiveFloatingBadge';
 import PwaRegister from '../components/PwaRegister';
+import ToastContainer from '../components/ui/Toast';
+import SchemaOrg from '../components/seo/SchemaOrg';
 import { CHURCH } from '../lib/site-config';
+import { getChurchJsonLd, getServiceEventsJsonLd } from '../lib/seo';
 
 const display = Anton({ weight: '400', subsets: ['latin'], variable: '--font-display', display: 'swap' });
 const body = Archivo({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
@@ -77,8 +80,15 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const churchSchema = getChurchJsonLd();
+  const serviceEventsSchema = getServiceEventsJsonLd();
+
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
+      <head>
+        <SchemaOrg data={churchSchema} />
+        <SchemaOrg data={serviceEventsSchema} />
+      </head>
       <body className="bg-paper font-sans text-ink-950">
         <AnnouncementTicker />
         <Navbar />
@@ -90,6 +100,7 @@ export default function RootLayout({ children }) {
         <WhatsAppButton />
         <LiveFloatingBadge />
         <PwaRegister />
+        <ToastContainer />
         <Footer />
       </body>
     </html>

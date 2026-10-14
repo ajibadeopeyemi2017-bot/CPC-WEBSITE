@@ -6,6 +6,7 @@ import { CHURCH } from '../../lib/site-config';
 import Button from '../ui/Button';
 import Eyebrow from '../ui/Eyebrow';
 import { Field, Input, Select, Textarea } from '../ui/Field';
+import { toast } from '../ui/Toast';
 
 export const SERVICE_OPTIONS = [
   'Upcoming Sunday (8:00 AM)',
@@ -49,8 +50,14 @@ export default function VisitForm() {
       }
 
       setSubmitted(true);
+      toast.success(
+        `Welcome ${form.name || 'Friend'}! Your visit reservation for ${form.serviceDate} has been confirmed.`,
+        'VIP Seat Reserved'
+      );
     } catch (err) {
-      setErrorMessage(err.message || 'Network error. Please try again.');
+      const msg = err.message || 'Network error. Please try again.';
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }

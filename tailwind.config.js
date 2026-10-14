@@ -14,6 +14,8 @@ module.exports = {
           600: '#1f7a2e',
           700: '#17611f',
           800: '#0f4a17',
+          900: '#0a3510',
+          950: '#052008',
         },
         // Near-black with a green cast, used for text and dark sections.
         ink: {

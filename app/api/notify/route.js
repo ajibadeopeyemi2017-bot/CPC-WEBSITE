@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { CHURCH } from '../../../lib/site-config';
-import { saveVisitor, savePrayer, saveTestimony, saveVolunteer } from '../../../lib/db';
+import { saveVisitor, savePrayer, saveTestimony, saveVolunteer, saveRegistration } from '../../../lib/db';
 import { checkRateLimit, getClientIp } from '../../../lib/rate-limit';
+import { sanitizeFormData, escapeEmailData } from '../../../lib/sanitize';
 
 export const runtime = 'nodejs';
 
@@ -12,6 +13,9 @@ function buildEmailContent(type, data) {
     dateStyle: 'full',
     timeStyle: 'short',
   });
+
+  // Safe HTML-escaped clone for rich HTML email rendering
+  const safe = escapeEmailData(data);
 
   if (type === 'visit') {
     const subject = `[CPC Guest RSVP] ${data.name || 'Visitor'} — ${data.serviceDate || 'Upcoming Service'}`;
@@ -43,31 +47,31 @@ Please alert the Ushers & Hospitality Directorate to prepare their welcome pack 
           <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; width: 35%; border-bottom: 1px solid #e2e8f0;">Full Name</td>
-              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.name || 'N/A'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.name || 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Phone Number</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;"><a href="tel:${data.phone}" style="color: #0f4a17; font-weight: 600;">${data.phone || 'N/A'}</a></td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.phone ? `<a href="tel:${safe.phone}" style="color: #0f4a17; font-weight: 600;">${safe.phone}</a>` : 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Email</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.email ? `<a href="mailto:${data.email}">${data.email}</a>` : 'Not provided'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.email ? `<a href="mailto:${safe.email}">${safe.email}</a>` : 'Not provided'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Service Reserved</td>
-              <td style="padding: 10px 12px; color: #0f4a17; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.serviceDate || 'N/A'}</td>
+              <td style="padding: 10px 12px; color: #0f4a17; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.serviceDate || 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Party Size</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.attendeeCount || '1'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.attendeeCount || '1'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Children</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.hasKids || 'No'} ${data.kidAges ? `(Ages: ${data.kidAges})` : ''}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.hasKids || 'No'} ${safe.kidAges ? `(Ages: ${safe.kidAges})` : ''}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Special Notes</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.specialAssistance || 'None noted'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.specialAssistance || 'None noted'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569;">Submission Time</td>
@@ -111,19 +115,19 @@ Apostle Oluwafunminiyi Olufisayo and the School of Prayer intercessors will lift
           <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; width: 35%; border-bottom: 1px solid #e2e8f0;">Name</td>
-              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.name || 'Anonymous Believer'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.name || 'Anonymous Believer'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Category</td>
-              <td style="padding: 10px 12px; color: #1e3a6c; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.category || 'General Intercession'}</td>
+              <td style="padding: 10px 12px; color: #1e3a6c; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.category || 'General Intercession'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Phone</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.phone ? `<a href="tel:${data.phone}" style="color: #1e3a6c; font-weight: 600;">${data.phone}</a>` : 'Not provided'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.phone ? `<a href="tel:${safe.phone}" style="color: #1e3a6c; font-weight: 600;">${safe.phone}</a>` : 'Not provided'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Email</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.email ? `<a href="mailto:${data.email}">${data.email}</a>` : 'Not provided'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.email ? `<a href="mailto:${safe.email}">${safe.email}</a>` : 'Not provided'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569;">Submission Time</td>
@@ -132,7 +136,7 @@ Apostle Oluwafunminiyi Olufisayo and the School of Prayer intercessors will lift
           </table>
           <div style="background: #f1f5f9; border-left: 4px solid #1e3a6c; padding: 16px; border-radius: 4px;">
             <p style="margin: 0 0 6px; font-weight: 700; font-size: 13px; text-transform: uppercase; color: #475569;">The Prayer Burden / Petition:</p>
-            <p style="margin: 0; font-size: 15px; color: #0f172a; line-height: 1.6; white-space: pre-wrap;">${data.details || 'No details provided'}</p>
+            <p style="margin: 0; font-size: 15px; color: #0f172a; line-height: 1.6; white-space: pre-wrap;">${safe.details || 'No details provided'}</p>
           </div>
         </div>
       </div>
@@ -165,19 +169,19 @@ Please follow up with this believer within 48 hours.
           <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; width: 35%; border-bottom: 1px solid #e2e8f0;">Full Name</td>
-              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.name || 'N/A'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.name || 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Department</td>
-              <td style="padding: 10px 12px; color: #0f4a17; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.department || 'N/A'}</td>
+              <td style="padding: 10px 12px; color: #0f4a17; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.department || 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Phone / WhatsApp</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;"><a href="tel:${data.phone}" style="color: #0f4a17; font-weight: 600;">${data.phone || 'N/A'}</a></td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.phone ? `<a href="tel:${safe.phone}" style="color: #0f4a17; font-weight: 600;">${safe.phone}</a>` : 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Email</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.email ? `<a href="mailto:${data.email}">${data.email}</a>` : 'Not provided'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.email ? `<a href="mailto:${safe.email}">${safe.email}</a>` : 'Not provided'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569;">Submission Time</td>
@@ -186,7 +190,7 @@ Please follow up with this believer within 48 hours.
           </table>
           <div style="background: #f8fafc; border-left: 4px solid #0f4a17; padding: 16px; border-radius: 4px;">
             <p style="margin: 0 0 6px; font-weight: 700; font-size: 13px; text-transform: uppercase; color: #475569;">Prior Experience / Notes:</p>
-            <p style="margin: 0; font-size: 14px; color: #0f172a; line-height: 1.6; white-space: pre-wrap;">${data.experience || 'None noted'}</p>
+            <p style="margin: 0; font-size: 14px; color: #0f172a; line-height: 1.6; white-space: pre-wrap;">${safe.experience || 'None noted'}</p>
           </div>
         </div>
       </div>
@@ -224,21 +228,21 @@ Status: Confirmed / Paid
             <p style="margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b;">Amount Given</p>
             <h1 style="margin: 4px 0 0; font-size: 36px; color: #0f4a17; font-weight: 800;">${formattedAmount}</h1>
             <span style="display: inline-block; margin-top: 6px; padding: 4px 10px; background: #eef7ea; color: #17611f; font-size: 12px; font-weight: 600; border-radius: 999px;">
-              ${data.category || 'General Offering'}
+              ${safe.category || 'General Offering'}
             </span>
           </div>
           <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 20px;">
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; width: 35%; border-bottom: 1px solid #e2e8f0;">Donor Name</td>
-              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.name || 'Anonymous Giver'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.name || 'Anonymous Giver'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Donor Email</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.email ? `<a href="mailto:${data.email}">${data.email}</a>` : 'Not provided'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.email ? `<a href="mailto:${safe.email}">${safe.email}</a>` : 'Not provided'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Reference ID</td>
-              <td style="padding: 10px 12px; font-family: monospace; color: #0f172a; font-size: 13px; border-bottom: 1px solid #e2e8f0;">${data.reference || 'N/A'}</td>
+              <td style="padding: 10px 12px; font-family: monospace; color: #0f172a; font-size: 13px; border-bottom: 1px solid #e2e8f0;">${safe.reference || 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Payment Channel</td>
@@ -287,23 +291,23 @@ ${data.details || 'No details provided'}
           <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; width: 35%; border-bottom: 1px solid #e2e8f0;">Name</td>
-              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.name || 'Anonymous Believer'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.name || 'Anonymous Believer'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Category</td>
-              <td style="padding: 10px 12px; color: #92400e; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${data.category || 'Divine Encounter'}</td>
+              <td style="padding: 10px 12px; color: #92400e; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.category || 'Divine Encounter'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Testimony Title</td>
-              <td style="padding: 10px 12px; color: #0f172a; font-weight: 600; border-bottom: 1px solid #e2e8f0;">${data.title || 'Answered Prayer'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; font-weight: 600; border-bottom: 1px solid #e2e8f0;">${safe.title || 'Answered Prayer'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Phone / WhatsApp</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.phone ? `<a href="tel:${data.phone}" style="color: #0f4a17; font-weight: 600;">${data.phone}</a>` : 'Not provided'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.phone ? `<a href="tel:${safe.phone}" style="color: #0f4a17; font-weight: 600;">${safe.phone}</a>` : 'Not provided'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Email</td>
-              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${data.email ? `<a href="mailto:${data.email}">${data.email}</a>` : 'Not provided'}</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.email ? `<a href="mailto:${safe.email}">${safe.email}</a>` : 'Not provided'}</td>
             </tr>
             <tr>
               <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Share in Church</td>
@@ -316,7 +320,7 @@ ${data.details || 'No details provided'}
           </table>
           <div style="background: #fffbeb; border-left: 4px solid #b45309; padding: 16px; border-radius: 4px;">
             <p style="margin: 0 0 6px; font-weight: 700; font-size: 13px; text-transform: uppercase; color: #92400e;">The Testimony Story:</p>
-            <p style="margin: 0; font-size: 15px; color: #0f172a; line-height: 1.6; white-space: pre-wrap;">${data.details || 'No details provided'}</p>
+            <p style="margin: 0; font-size: 15px; color: #0f172a; line-height: 1.6; white-space: pre-wrap;">${safe.details || 'No details provided'}</p>
           </div>
           <div style="margin-top: 20px; font-size: 12px; color: #64748b; font-style: italic;">
             “And they overcame him by the blood of the Lamb, and by the word of their testimony.” &mdash; Revelation 12:11
@@ -327,10 +331,86 @@ ${data.details || 'No details provided'}
     return { subject, text, html };
   }
 
+  if (type === 'registration') {
+    const subject = `[CPC Conference Registration] ${data.name || 'Delegate'} — ${data.eventTitle || 'Conference / School'}`;
+    const text = `
+NEW CONFERENCE / SCHOOL REGISTRATION
+--------------------------------------------------
+Time: ${timestamp}
+Event / School: ${data.eventTitle || 'N/A'}
+Delegate Name: ${data.name || 'N/A'}
+Phone / WhatsApp: ${data.phone || 'N/A'}
+Email: ${data.email || 'N/A'}
+Location: ${data.location || 'N/A'}
+Home Church / Ministry: ${data.church || 'N/A'}
+Role: ${data.role || 'N/A'}
+Accommodation Required: ${data.accommodation || 'No'}
+Notes / Questions: ${data.notes || 'None noted'}
+
+Both pastoral WhatsApp lines (07062709694 & 08163776464) have also received this notification.
+    `.trim();
+
+    const html = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+        <div style="background: #0f4a17; color: #ffffff; padding: 24px 28px;">
+          <p style="margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #dcefd3;">Christ The Potter Church &bull; Conference Secretariat</p>
+          <h2 style="margin: 6px 0 0; font-size: 22px; font-weight: 700;">New Conference / School Registration</h2>
+        </div>
+        <div style="padding: 28px;">
+          <p style="margin: 0 0 20px; font-size: 15px; color: #334155; line-height: 1.5;">
+            A delegate has registered for an apostolic gathering or leadership school.
+          </p>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 24px;">
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; width: 35%; border-bottom: 1px solid #e2e8f0;">Event / School</td>
+              <td style="padding: 10px 12px; color: #0f4a17; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.eventTitle || 'Conference / School'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Delegate Name</td>
+              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.name || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Phone / WhatsApp</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.phone ? `<a href="tel:${safe.phone}" style="color: #0f4a17; font-weight: 600;">${safe.phone}</a>` : 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Email</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.email ? `<a href="mailto:${safe.email}">${safe.email}</a>` : 'Not provided'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">City / Location</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.location || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Home Church / Ministry</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.church || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Accommodation Required</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.accommodation || 'No'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Notes / Questions</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.notes || 'None noted'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569;">Submission Time</td>
+              <td style="padding: 10px 12px; color: #64748b; font-size: 13px;">${timestamp}</td>
+            </tr>
+          </table>
+          <div style="padding: 14px; background: #eef7ea; border-radius: 8px; font-size: 13px; color: #17611f; line-height: 1.5;">
+            <strong>WhatsApp Lines Alerted:</strong> 07062709694 and 08163776464.
+          </div>
+        </div>
+      </div>
+    `;
+    return { subject, text, html };
+  }
+
   return {
     subject: `[CPC Notification] New submission`,
     text: JSON.stringify(data, null, 2),
-    html: `<pre>${JSON.stringify(data, null, 2)}</pre>`,
+    html: `<pre>${safe ? JSON.stringify(safe, null, 2) : ''}</pre>`,
   };
 }
 
@@ -356,29 +436,34 @@ export async function POST(request) {
       );
     }
 
-    if (!data.name && !data.phone) {
+    // Sanitize and validate form payload
+    const cleanData = sanitizeFormData(type, data);
+
+    if (!cleanData.name && !cleanData.phone) {
       return NextResponse.json(
         { success: false, error: 'Please provide at least a name or phone number' },
         { status: 400 }
       );
     }
 
-    // Persist submission into church database
+    // Persist sanitized submission into church database
     if (type === 'visit') {
-      saveVisitor(data);
+      await saveVisitor(cleanData);
     } else if (type === 'prayer') {
-      savePrayer(data);
+      await savePrayer(cleanData);
     } else if (type === 'testimony') {
-      saveTestimony(data);
+      await saveTestimony(cleanData);
     } else if (type === 'volunteer') {
-      saveVolunteer(data);
+      await saveVolunteer(cleanData);
+    } else if (type === 'registration') {
+      await saveRegistration(cleanData);
     }
 
     const recipient = process.env.NOTIFICATION_RECIPIENT_EMAIL || CHURCH.email || 'christthepotterchurch@gmail.com';
     const fromAddress = process.env.NOTIFICATION_FROM_EMAIL || 'Christ The Potter Church <onboarding@resend.dev>';
     const apiKey = process.env.RESEND_API_KEY?.trim();
 
-    const { subject, text, html } = buildEmailContent(type, data);
+    const { subject, text, html } = buildEmailContent(type, cleanData);
 
     // If RESEND_API_KEY is configured, dispatch the live email
     if (apiKey) {
@@ -391,8 +476,8 @@ export async function POST(request) {
         html,
       };
 
-      if (data.email && data.email.includes('@')) {
-        emailPayload.reply_to = data.email;
+      if (cleanData.email && cleanData.email.includes('@')) {
+        emailPayload.reply_to = cleanData.email;
       }
 
       const response = await resend.emails.send(emailPayload);
@@ -420,9 +505,9 @@ export async function POST(request) {
     console.log(`Subject: ${subject}`);
     console.log(`Payload Summary:`, {
       type,
-      name: data.name,
-      phone: data.phone,
-      email: data.email,
+      name: cleanData.name,
+      phone: cleanData.phone,
+      email: cleanData.email,
     });
     console.log(`(Add RESEND_API_KEY in .env.local to dispatch live emails to ${recipient})`);
     console.log('------------------------------------------------------------');
@@ -441,3 +526,4 @@ export async function POST(request) {
     );
   }
 }
+

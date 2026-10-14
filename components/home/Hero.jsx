@@ -13,25 +13,26 @@ import PlanVisitTrigger from '../PlanVisitTrigger';
 
 const slides = [
   {
-    eyebrow: 'Ile-Ife · Osun State · Nigeria',
-    line1: 'Christ The Potter.',
-    line2: 'Walk in the reality of Christ.',
+    eyebrow: 'WELCOME ;',
+    line1: 'CHRIST THE POTTER CHURCH',
+    sublocation: 'Ile Ife. Osun State. Nigeria',
+    line2: 'Teaching Men to Walk in the reality of who Christ is',
     image: '/images/pastor-action.jpg',
-    alt: 'Apostle Oluwafunminiyi Olufisayo',
+    alt: 'Christ The Potter Church, Ile-Ife',
   },
   {
-    eyebrow: 'KYMC 2026 · September 24 – 26',
-    line1: 'Kingdom Young Ministers.',
-    line2: 'The man the Lord will work with.',
+    eyebrow: 'DIVINE ENCOUNTERS',
+    line1: 'YOU ARE AT THE RIGHT PLACE',
+    line2: 'FOR DIVINE ENCOUNTERS THAT BRING TOTAL TRANSFORMATION IN YOUR LIFE',
     image: '/images/pastor-portrait.jpg',
-    alt: 'Apostle Oluwafunminiyi Olufisayo, convener of KYMC',
+    alt: 'Apostle Oluwafunminiyi Olufisayo',
   },
   {
-    eyebrow: 'Sundays 8:00AM · Tue & Thu 5:00PM',
-    line1: 'You belong here.',
-    line2: 'Come as you are.',
+    eyebrow: 'CHURCH FAMILY',
+    line1: 'YOU BELONG HERE.',
+    line2: 'COME AS YOU ARE AND BE TRANSFORMED TO YOUR BEST ORDAINED VERSION',
     image: '/images/pastor-oluwafunminiyi.jpg',
-    alt: 'Apostle Oluwafunminiyi Olufisayo',
+    alt: 'Christ The Potter Church Family',
   },
 ];
 
@@ -87,10 +88,17 @@ export default function Hero() {
                 i === active ? 'opacity-100 delay-300' : 'opacity-0'
               )}
             >
-              <p className="text-[0.66rem] font-bold uppercase tracking-[0.35em] text-white/80">{slide.eyebrow}</p>
-              <h2 className="mt-5 max-w-[1100px] font-display text-[2.7rem] uppercase leading-[0.92] sm:text-[4rem] lg:text-[5rem]">
+              <p className="text-[0.68rem] font-bold uppercase tracking-[0.35em] text-brand-300">{slide.eyebrow}</p>
+              <h2 className="mt-4 max-w-[1100px] font-display text-[2.4rem] uppercase leading-[0.92] sm:text-[3.8rem] lg:text-[4.6rem]">
                 <span className="block">{slide.line1}</span>
-                <span className="block text-brand-300">{slide.line2}</span>
+                {slide.sublocation && (
+                  <span className="block font-sans text-xs sm:text-sm font-semibold tracking-[0.22em] text-white/80 my-1.5 normal-case">
+                    ({slide.sublocation})
+                  </span>
+                )}
+                <span className="block text-brand-300 text-xl sm:text-3xl lg:text-4xl leading-tight mt-2 normal-case font-sans font-medium text-white/95">
+                  {slide.line2}
+                </span>
               </h2>
             </div>
           ))}

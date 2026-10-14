@@ -5,6 +5,7 @@ import { Check, Send } from 'lucide-react';
 import { MINISTRIES } from '../../lib/conferences';
 import Button from '../ui/Button';
 import { Field, Input, Select, Textarea } from '../ui/Field';
+import { toast } from '../ui/Toast';
 
 const emptyForm = { name: '', phone: '', department: MINISTRIES[0].title, experience: '' };
 
@@ -34,8 +35,14 @@ export default function VolunteerForm() {
       }
 
       setSubmitted(true);
+      toast.success(
+        `Thank you ${form.name || 'Believer'}! Your volunteer application for ${form.department} has been received.`,
+        'Application Received'
+      );
     } catch (err) {
-      setErrorMessage(err.message || 'Network error. Please try again.');
+      const msg = err.message || 'Network error. Please try again.';
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
