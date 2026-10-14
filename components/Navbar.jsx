@@ -89,22 +89,22 @@ export default function Navbar() {
                   {/* Dropdown List Downward of Captions */}
                   {isHovered && item.sublinks && item.sublinks.length > 0 && (
                     <div
-                      className="absolute top-full left-0 pt-2 z-50 min-w-[230px] sm:min-w-[250px] pointer-events-auto animate-in fade-in slide-in-from-top-1 duration-150"
+                      className="absolute top-full left-0 pt-1.5 z-50 w-44 sm:w-48 pointer-events-auto animate-in fade-in slide-in-from-top-1 duration-150"
                       onMouseEnter={() => handleMouseEnter(item.name)}
                       onMouseLeave={handleMouseLeave}
                     >
-                      <div className="overflow-hidden rounded-lg border border-ink-950/15 bg-white text-ink-950 shadow-2xl ring-1 ring-black/5 py-1">
+                      <div className="overflow-hidden rounded-md border border-ink-950/15 bg-white text-ink-950 shadow-xl ring-1 ring-black/5 py-0.5">
                         {item.sublinks.map((sub, idx) => (
                           <Link
                             key={idx}
                             href={sub.href}
                             onClick={() => setHoveredNav(null)}
-                            className="group/caption flex items-center justify-between px-4 py-2.5 text-left text-xs font-semibold text-ink-950 transition-colors hover:bg-[#eef7ea] hover:text-[#0f4a17] border-b border-ink-950/5 last:border-none"
+                            className="group/caption flex items-center justify-between px-3 py-1.5 text-left text-[0.7rem] font-semibold text-ink-950 transition-colors hover:bg-[#eef7ea] hover:text-[#0f4a17] border-b border-ink-950/5 last:border-none"
                           >
-                            <span>{sub.title}</span>
+                            <span className="truncate">{sub.title}</span>
                             <ArrowRight
-                              size={12}
-                              className="text-brand-600 opacity-0 -translate-x-1 transition-all group-hover/caption:opacity-100 group-hover/caption:translate-x-0"
+                              size={10}
+                              className="shrink-0 ml-1.5 text-brand-600 opacity-0 -translate-x-1 transition-all group-hover/caption:opacity-100 group-hover/caption:translate-x-0"
                             />
                           </Link>
                         ))}
