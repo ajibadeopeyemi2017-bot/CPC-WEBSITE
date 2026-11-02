@@ -5,7 +5,7 @@ import Button from '../ui/Button';
 
 export default function Mandate() {
   return (
-    <section className="bg-ink-950 py-32 text-white [clip-path:polygon(0_56px,100%_0,100%_calc(100%_-_56px),0_100%)] lg:py-40">
+    <section id="mandate" className="scroll-mt-20 bg-ink-950 py-32 text-white [clip-path:polygon(0_56px,100%_0,100%_calc(100%_-_56px),0_100%)] lg:py-40">
       <Container narrow>
         <Eyebrow tone="light">Our mandate</Eyebrow>
         <h2 className="mt-5 font-display text-[2.6rem] uppercase leading-[0.95] sm:text-6xl lg:text-7xl">

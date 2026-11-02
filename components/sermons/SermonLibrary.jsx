@@ -1,14 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import clsx from 'clsx';
 import {
   Play,
-  Pause,
   Search,
   Share2,
   Check,
-  Radio,
   Download,
   Bookmark,
   BookmarkCheck,
@@ -16,7 +15,7 @@ import {
   RotateCcw,
   SlidersHorizontal,
   X,
-  Volume2,
+  BookOpen,
 } from 'lucide-react';
 import {
   SERMONS,
@@ -31,17 +30,16 @@ import {
   toggleBookmarkSermon,
   downloadSermonAudio,
 } from '../../lib/sermons';
-import { SOCIAL_LINKS } from '../../lib/site-config';
 import { useLiveStatus } from '../../hooks/useLiveStatus';
 import Container from '../ui/Container';
 import Eyebrow from '../ui/Eyebrow';
 import Button from '../ui/Button';
 
-function ShareButton({ sermon }) {
+function ShareButton({ sermon, light = false }) {
   const [copied, setCopied] = useState(false);
 
   const share = async () => {
-    const url = typeof window !== 'undefined' ? `${window.location.origin}/sermons#${sermon.id}` : '';
+    const url = typeof window !== 'undefined' ? `${window.location.origin}/sermons/${sermon.id}` : '';
     try {
       if (navigator.share) {
         await navigator.share({
@@ -64,10 +62,15 @@ function ShareButton({ sermon }) {
       type="button"
       onClick={share}
       aria-label={`Share ${sermon.title}`}
-      title="Share sermon link"
-      className="flex h-9 w-9 items-center justify-center border border-ink-950/20 text-ink-950/70 transition-colors hover:border-ink-950 hover:text-ink-950"
+      title="Share sermon page link"
+      className={clsx(
+        'flex items-center justify-center border transition-colors',
+        light
+          ? 'h-11 w-11 border-white/20 text-white/80 hover:border-white hover:text-white'
+          : 'h-9 w-9 border-ink-950/20 text-ink-950/70 hover:border-ink-950 hover:text-ink-950'
+      )}
     >
-      {copied ? <Check size={14} className="text-brand-600" /> : <Share2 size={14} />}
+      {copied ? <Check size={14} className="text-brand-500" /> : <Share2 size={14} />}
     </button>
   );
 }
@@ -206,7 +209,7 @@ export default function SermonLibrary() {
   return (
     <>
       {/* Featured Sermon Hero Banner */}
-      <section className="py-16 sm:py-20 lg:py-24">
+      <section id="featured" className="py-16 sm:py-20 lg:py-24">
         <Container>
           <div className="grid gap-10 bg-ink-950 p-7 text-white sm:p-12 lg:grid-cols-[1.4fr_1fr] lg:items-end">
             <div>
@@ -221,7 +224,9 @@ export default function SermonLibrary() {
               </div>
 
               <h2 className="mt-4 font-display text-[2rem] uppercase leading-[0.95] sm:text-4xl lg:text-5xl">
-                {active.title}
+                <Link href={`/sermons/${active.id}`} className="hover:text-brand-300 transition-colors">
+                  {active.title}
+                </Link>
               </h2>
 
               <p className="mt-3.5 text-[0.64rem] font-bold uppercase tracking-[0.22em] text-brand-300">
@@ -253,6 +258,11 @@ export default function SermonLibrary() {
               >
                 <Play size={14} />
                 Listen Now
+              </Button>
+
+              <Button variant="outlineLight" size="lg" href={`/sermons/${active.id}`}>
+                <BookOpen size={14} />
+                Study Notes
               </Button>
 
               <Button
@@ -289,7 +299,7 @@ export default function SermonLibrary() {
                 >
                   {bookmarkedIds.includes(active.id) ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
                 </button>
-                <ShareButton sermon={active} />
+                <ShareButton sermon={active} light />
               </div>
             </div>
           </div>
@@ -297,7 +307,7 @@ export default function SermonLibrary() {
       </section>
 
       {/* Sermon Catalogue & Filters */}
-      <section className="pb-20 lg:pb-28">
+      <section id="library" className="pb-20 lg:pb-28">
         <Container>
           {/* Section Header & Search Bar */}
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -377,6 +387,7 @@ export default function SermonLibrary() {
 
             {/* Bookmarks Filter Pill */}
             <button
+              id="bookmarks"
               type="button"
               onClick={() => {
                 setOnlyBookmarked(!onlyBookmarked);
@@ -397,7 +408,7 @@ export default function SermonLibrary() {
           </div>
 
           {/* Advanced Dropdown Controls: Series & Preacher Filter */}
-          <div className="mt-4 flex flex-wrap items-center gap-3 border-y border-ink-950/10 py-3 text-xs">
+          <div id="series" className="mt-4 flex flex-wrap items-center gap-3 border-y border-ink-950/10 py-3 text-xs">
             <div className="flex items-center gap-1.5 text-ink-950/60 text-[0.68rem] font-bold uppercase tracking-wider">
               <SlidersHorizontal size={13} />
               <span>Filters:</span>
@@ -502,8 +513,8 @@ export default function SermonLibrary() {
                         )}
                       </div>
 
-                      <h3 className="mt-2 font-display text-xl uppercase leading-tight text-ink-950 sm:text-2xl">
-                        {sermon.title}
+                      <h3 className="mt-2 font-display text-xl uppercase leading-tight text-ink-950 transition-colors hover:text-brand-600 sm:text-2xl">
+                        <Link href={`/sermons/${sermon.id}`}>{sermon.title}</Link>
                       </h3>
 
                       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-950/65">
@@ -515,7 +526,7 @@ export default function SermonLibrary() {
                       </p>
                     </div>
 
-                    {/* Action Buttons: Play, Resume, Download, Bookmark, Share */}
+                    {/* Action Buttons: Play, Resume, Study Notes, Download, Bookmark, Share */}
                     <div className="flex flex-wrap items-center gap-2">
                       {savedPos ? (
                         <Button
@@ -531,13 +542,23 @@ export default function SermonLibrary() {
                       ) : null}
 
                       <Button
-                        variant={savedPos ? 'outlineDark' : 'outlineDark'}
+                        variant="outlineDark"
                         size="sm"
                         onClick={() => play(sermon)}
                         aria-label={`Play ${sermon.title}`}
                       >
                         <Play size={12} />
                         {isPlayingThis ? 'Active' : 'Play'}
+                      </Button>
+
+                      <Button
+                        variant="outlineDark"
+                        size="sm"
+                        href={`/sermons/${sermon.id}`}
+                        title="Open full sermon study notes & outline"
+                      >
+                        <BookOpen size={12} />
+                        Study Notes
                       </Button>
 
                       <DownloadButton sermon={sermon} />

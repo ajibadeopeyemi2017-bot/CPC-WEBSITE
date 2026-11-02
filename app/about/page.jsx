@@ -171,7 +171,7 @@ export default function AboutPage() {
         imageAlt="Apostle Oluwafunminiyi Olufisayo"
       />
 
-      <section className="py-20 lg:py-28">
+      <section id="calling" className="scroll-mt-20 py-20 lg:py-28">
         <Container>
           <SectionHeader
             eyebrow="God-given blueprint"
@@ -208,9 +208,10 @@ export default function AboutPage() {
       </section>
 
       <section
-        id="doctrine"
+        id="faith"
         className="scroll-mt-20 bg-ink-950 py-28 text-white [clip-path:polygon(0_48px,100%_0,100%_calc(100%_-_48px),0_100%)] lg:py-36"
       >
+        <span id="doctrine" className="block scroll-mt-20" />
         <Container>
           <SectionHeader
             tone="light"
@@ -233,7 +234,7 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <section className="py-20 lg:py-28">
+      <section id="leadership" className="scroll-mt-20 py-20 lg:py-28">
         <Container>
           <div className="grid items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
             <div className="relative aspect-[4/5] overflow-hidden bg-ink-950">
@@ -266,7 +267,7 @@ export default function AboutPage() {
                 serves with him as Vice President and coordinator of church affairs. They live in Ile-Ife, Osun State, with
                 their children, Aquila and Paul.
               </p>
-              <div className="mt-8 border-l-2 border-brand-600 pl-5">
+              <div id="osom" className="mt-8 scroll-mt-24 border-l-2 border-brand-600 pl-5">
                 <p className="text-[0.64rem] font-bold uppercase tracking-[0.25em] text-brand-600">
                   Ministry arm · OSOM mandate
                 </p>
@@ -280,7 +281,7 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <section className="pb-20 lg:pb-28">
+      <section id="values" className="scroll-mt-20 pb-20 lg:pb-28">
         <Container>
           <SectionHeader
             eyebrow="Biblical order"

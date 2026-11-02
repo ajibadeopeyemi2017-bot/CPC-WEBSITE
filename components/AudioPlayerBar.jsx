@@ -273,7 +273,7 @@ export default function AudioPlayerBar() {
   };
 
   const handleShare = async () => {
-    const url = typeof window !== 'undefined' ? `${window.location.origin}/sermons#${track.id}` : '';
+    const url = typeof window !== 'undefined' ? `${window.location.origin}/sermons/${track.id}` : '';
     try {
       if (navigator.share) {
         await navigator.share({
@@ -335,7 +335,7 @@ export default function AudioPlayerBar() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 z-40 flex items-center gap-2.5 border border-white/20 bg-ink-950 px-4 py-3 text-[0.66rem] font-bold uppercase tracking-[0.2em] text-white shadow-2xl transition-all hover:bg-brand-700 sm:bottom-6 sm:right-6"
+        className="fixed bottom-4 left-4 z-40 flex items-center gap-2.5 border border-white/20 bg-ink-950 px-4 py-3 text-[0.66rem] font-bold uppercase tracking-[0.2em] text-white shadow-2xl transition-all hover:bg-brand-700 sm:bottom-6 sm:left-6"
         aria-label="Open audio player"
       >
         {isPlaying ? (

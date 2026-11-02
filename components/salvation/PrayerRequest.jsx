@@ -125,8 +125,16 @@ export default function PrayerRequest() {
   const [testimonyWall, setTestimonyWall] = useState(initialTestimonyWall);
   const [praised, setPraised] = useState({});
 
-  // Load live prayers and approved praise reports
+  // Load live prayers and approved praise reports + sync #testimony hash
   useEffect(() => {
+    const syncHash = () => {
+      if (typeof window !== 'undefined' && window.location.hash === '#testimony') {
+        setActiveTab('testimony');
+      }
+    };
+    syncHash();
+    window.addEventListener('hashchange', syncHash);
+
     fetch('/api/testimonies')
       .then((res) => res.json())
       .then((res) => {
@@ -159,6 +167,8 @@ export default function PrayerRequest() {
         }
       })
       .catch(() => {});
+
+    return () => window.removeEventListener('hashchange', syncHash);
   }, []);
 
   // Handlers for prayer

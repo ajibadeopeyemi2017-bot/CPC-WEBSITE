@@ -12,28 +12,9 @@ const gatherings = [
   "AMITES Ministers' School",
 ];
 
-const excerpts = [
-  {
-    image: '/images/quote-purpose.jpg',
-    title: 'Purpose vs. Calling',
-    quote:
-      "Purpose is the reason for your existence, the very backbone of what you're born to do, while Calling is how you're meant to do it.",
-  },
-  {
-    image: '/images/quote-accountability.jpg',
-    title: 'The Race of Life',
-    quote: "Everyone will give account of his race in life at the end, whether you're aware of it or not.",
-  },
-  {
-    image: '/images/quote-surrender.jpg',
-    title: 'The Living Sacrifice',
-    quote: 'The best sacrifice you can offer to God is your life. God wants us to remain a living sacrifice unto Him.',
-  },
-];
-
 export default function SetMan() {
   return (
-    <section className="py-20 lg:py-28">
+    <section id="setman" className="scroll-mt-20 py-20 lg:py-28">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           <div className="relative aspect-[4/5] overflow-hidden bg-ink-950">
@@ -72,33 +53,15 @@ export default function SetMan() {
               ))}
             </ul>
 
-            <Button variant="solid" href="/about" className="mt-9">
-              More About Us
-              <ArrowRight size={14} />
-            </Button>
-          </div>
-        </div>
-
-        <div className="mt-20 lg:mt-28">
-          <Eyebrow>Words of wisdom</Eyebrow>
-          <div className="mt-6 grid gap-5 sm:grid-cols-3">
-            {excerpts.map((item) => (
-              <figure key={item.title} className="border border-ink-950/10 bg-white">
-                <div className="relative aspect-square bg-ink-950">
-                  <Image
-                    src={item.image}
-                    alt={`${item.title} — quote graphic`}
-                    fill
-                    sizes="(min-width: 640px) 33vw, 100vw"
-                    className="object-contain"
-                  />
-                </div>
-                <figcaption className="p-5">
-                  <span className="font-display text-xl uppercase text-ink-950">{item.title}</span>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-950/65">“{item.quote}”</p>
-                </figcaption>
-              </figure>
-            ))}
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Button variant="solid" href="/about">
+                More About Us
+                <ArrowRight size={14} />
+              </Button>
+              <Button variant="outlineDark" href="/connect#conferences">
+                Conferences &amp; Schools
+              </Button>
+            </div>
           </div>
         </div>
       </Container>

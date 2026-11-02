@@ -69,7 +69,7 @@ export default function SalvationPage() {
             </div>
           </div>
 
-          <div className="mt-20">
+          <div id="steps" className="mt-20 scroll-mt-24">
             <SectionHeader eyebrow="What now?" title="Your next four steps" />
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {nextSteps.map((step, i) => (
@@ -81,11 +81,11 @@ export default function SalvationPage() {
               ))}
             </div>
 
-            <div className="mt-8 flex flex-col gap-5 border border-brand-600/30 bg-brand-50 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div id="counseling" className="mt-8 flex scroll-mt-24 flex-col gap-5 border border-brand-600/30 bg-brand-50 p-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-display text-xl uppercase text-brand-800">Want a pastor to walk with you?</p>
                 <p className="mt-1 text-sm text-brand-700">
-                  Call {CHURCH.phone} or chat our pastoral WhatsApp lines on 0706 270 9694 and 0816 377 6464.
+                  Call {CHURCH.phone} / {CHURCH.phoneAlt} or chat our pastoral WhatsApp lines on 0706 270 9694 and 0816 377 6464.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2.5">
@@ -103,6 +103,7 @@ export default function SalvationPage() {
       </section>
 
       <section id="prayer" className="scroll-mt-20 border-t border-ink-950/10 py-20 lg:py-28">
+        <span id="testimony" className="block scroll-mt-24" />
         <Container>
           <PrayerRequest />
         </Container>

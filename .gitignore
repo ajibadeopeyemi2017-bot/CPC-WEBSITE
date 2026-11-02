@@ -30,9 +30,10 @@ yarn-error.log*
 scratch/
 
 # raw design originals (docx/jpeg/pdf) — not used by the app at runtime,
-# kept locally for reference. Final assets live in public/images.
+# kept locally for reference. Final assets live in public/.
 /design-source/
+/daily_cards/
+/CPC_Daily_Cards_31Days_December2026.pdf
 
 # local database store
 /.data/
-

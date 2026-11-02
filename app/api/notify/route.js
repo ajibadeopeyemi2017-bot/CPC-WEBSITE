@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { CHURCH } from '../../../lib/site-config';
-import { saveVisitor, savePrayer, saveTestimony, saveVolunteer, saveRegistration } from '../../../lib/db';
+import { saveVisitor, savePrayer, saveTestimony, saveVolunteer, saveRegistration, saveConvert } from '../../../lib/db';
 import { checkRateLimit, getClientIp } from '../../../lib/rate-limit';
 import { sanitizeFormData, escapeEmailData } from '../../../lib/sanitize';
 
@@ -407,6 +407,66 @@ Both pastoral WhatsApp lines (07062709694 & 08163776464) have also received this
     return { subject, text, html };
   }
 
+  if (type === 'salvation') {
+    const subject = `[CPC Soul Won / Salvation Decision] ${data.name || 'New Believer'} — ${data.decisionType || 'Surrender to Christ'}`;
+    const text = `
+NEW SALVATION / ALTAR CALL DECISION
+--------------------------------------------------
+Time: ${timestamp}
+Believer Name: ${data.name || 'N/A'}
+Phone / WhatsApp: ${data.phone || 'N/A'}
+Email: ${data.email || 'N/A'}
+Decision Type: ${data.decisionType || 'First-Time Surrender to Jesus'}
+Area / Campus: ${data.location || 'Ile-Ife, Osun State'}
+Foundation Class: ${data.foundationClass || 'Yes'}
+Prayer Need / Note: ${data.prayerNeed || 'None noted'}
+
+Please assign a Follow-Up & Discipleship counselor to call and welcome this soul within 24 hours.
+    `.trim();
+
+    const html = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+        <div style="background: #0f4a17; color: #ffffff; padding: 24px 28px;">
+          <p style="margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #dcefd3;">Christ The Potter Church &bull; Altar Call &amp; Discipleship</p>
+          <h2 style="margin: 6px 0 0; font-size: 22px; font-weight: 700;">Hallelujah! New Salvation Decision</h2>
+        </div>
+        <div style="padding: 28px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; width: 35%; border-bottom: 1px solid #e2e8f0;">Believer Name</td>
+              <td style="padding: 10px 12px; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.name || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Decision</td>
+              <td style="padding: 10px 12px; color: #0f4a17; font-weight: 700; border-bottom: 1px solid #e2e8f0;">${safe.decisionType || 'First-Time Surrender to Jesus'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Phone / WhatsApp</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.phone ? `<a href="tel:${safe.phone}" style="color: #0f4a17; font-weight: 600;">${safe.phone}</a>` : 'N/A'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Area / Campus</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.location || 'Ile-Ife'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid #e2e8f0;">Foundation Class</td>
+              <td style="padding: 10px 12px; color: #0f172a; border-bottom: 1px solid #e2e8f0;">${safe.foundationClass || 'Yes'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 12px; background: #f8fafc; font-weight: 600; color: #475569;">Submission Time</td>
+              <td style="padding: 10px 12px; color: #64748b; font-size: 13px;">${timestamp}</td>
+            </tr>
+          </table>
+          ${safe.prayerNeed ? `
+          <div style="background: #eef7ea; border-left: 4px solid #0f4a17; padding: 14px; border-radius: 4px; font-size: 14px; color: #0f172a;">
+            <strong>Personal Prayer Note:</strong> ${safe.prayerNeed}
+          </div>` : ''}
+        </div>
+      </div>
+    `;
+    return { subject, text, html };
+  }
+
   return {
     subject: `[CPC Notification] New submission`,
     text: JSON.stringify(data, null, 2),
@@ -457,6 +517,8 @@ export async function POST(request) {
       await saveVolunteer(cleanData);
     } else if (type === 'registration') {
       await saveRegistration(cleanData);
+    } else if (type === 'salvation') {
+      await saveConvert(cleanData);
     }
 
     const recipient = process.env.NOTIFICATION_RECIPIENT_EMAIL || CHURCH.email || 'christthepotterchurch@gmail.com';
@@ -526,4 +588,3 @@ export async function POST(request) {
     );
   }
 }
-

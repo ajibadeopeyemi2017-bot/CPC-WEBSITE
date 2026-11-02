@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle2, Phone, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Phone, ArrowRight, Download, MapPin, Calendar, Users } from 'lucide-react';
 import { CHURCH } from '../../lib/site-config';
+import { DEVOTIONAL_PDF_URL } from '../../lib/devotional';
 import Button from '../ui/Button';
 import Eyebrow from '../ui/Eyebrow';
 import { Field, Input, Select, Textarea } from '../ui/Field';
@@ -14,10 +15,20 @@ export const SERVICE_OPTIONS = [
   'Thursday Revelational Hour (5:00 PM)',
 ];
 
+export const AREA_OPTIONS = [
+  'OAU Campus / Ede Road / Asherifa',
+  'Mayfair / Parakin / Damico',
+  'Lagere / Fajuyi Road / Sabo / Enuwa',
+  'OAUTHC / Eleyele / Moore',
+  'Iloro / Esindale / Ondo Road',
+  'Visiting from outside Ile-Ife',
+];
+
 const emptyForm = {
   name: '',
   phone: '',
   email: '',
+  area: AREA_OPTIONS[0],
   serviceDate: SERVICE_OPTIONS[0],
   attendeeCount: '1 person (just me)',
   hasKids: 'No',
@@ -51,7 +62,7 @@ export default function VisitForm() {
 
       setSubmitted(true);
       toast.success(
-        `Welcome ${form.name || 'Friend'}! Your visit reservation for ${form.serviceDate} has been confirmed.`,
+        `Welcome ${form.name || 'Friend'}! Your VIP seat reservation for ${form.serviceDate} is ready.`,
         'VIP Seat Reserved'
       );
     } catch (err) {
@@ -63,45 +74,135 @@ export default function VisitForm() {
     }
   };
 
+  const getWhatsAppPassHref = () => {
+    const msg =
+      `Hello Christ The Potter Church Protocol Desk! 🕊️\n\n` +
+      `I have just reserved my First-Timer VIP Visit online:\n` +
+      `• *Name:* ${form.name}\n` +
+      `• *Service:* ${form.serviceDate}\n` +
+      `• *Party Size:* ${form.attendeeCount}\n` +
+      `• *Coming From:* ${form.area}\n` +
+      `• *Children:* ${form.hasKids}${form.kidAges ? ` (Ages: ${form.kidAges})` : ''}\n` +
+      (form.specialAssistance ? `• *Note:* ${form.specialAssistance}\n` : '') +
+      `\nPlease send me the location pin and protocol contact for my arrival. Thank you!`;
+    return `https://wa.me/${CHURCH.whatsapp}?text=${encodeURIComponent(msg)}`;
+  };
+
   if (submitted) {
     return (
-      <div className="py-4">
-        <CheckCircle2 size={40} strokeWidth={1.5} className="text-brand-600" />
-        <h2 className="mt-6 font-display text-4xl uppercase leading-none text-ink-950">Your visit is reserved</h2>
-        <p className="mt-4 leading-relaxed text-ink-950/70">
-          Thank you, <strong className="text-ink-950">{form.name}</strong>. Our hospitality team has received your details and has been told to expect
-          you for <strong className="text-ink-950">{form.serviceDate}</strong>.
-        </p>
-        <div className="mt-6 border-l-2 border-brand-600 pl-5 text-sm leading-relaxed text-ink-950/70">
-          <p>
-            On arrival, tell the ushers: <em>“I’m {form.name}, I reserved a visit online.”</em> They will escort you and
-            your party.
-          </p>
-          <p className="mt-3 flex items-center gap-2 font-semibold text-brand-700">
-            <Phone size={14} />
-            Morning-of help line: {CHURCH.phone}
-          </p>
+      <div className="py-2">
+        <div className="flex items-center gap-3">
+          <CheckCircle2 size={36} strokeWidth={1.75} className="text-brand-600" />
+          <div>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-brand-600">
+              VIP Guest Confirmation
+            </span>
+            <h2 className="font-display text-3xl uppercase leading-none text-ink-950 sm:text-4xl">
+              Your Seat Is Reserved
+            </h2>
+          </div>
         </div>
-        <Button
-          variant="outlineDark"
-          className="mt-8"
-          onClick={() => {
-            setForm(emptyForm);
-            setSubmitted(false);
-          }}
-        >
-          Register another guest
-        </Button>
+
+        {/* Digital VIP Boarding Pass Card */}
+        <div className="mt-6 border-2 border-brand-600 bg-ink-950 p-6 text-white">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-4">
+            <div>
+              <p className="text-[0.62rem] font-bold uppercase tracking-[0.24em] text-[#d4af37]">
+                Christ The Potter Church · Ile-Ife
+              </p>
+              <p className="mt-0.5 font-display text-2xl uppercase text-white">
+                {form.name}
+              </p>
+            </div>
+            <span className="bg-brand-600 px-3 py-1 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-white">
+              First-Timer VIP Pass
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-3 text-xs sm:grid-cols-2">
+            <div className="flex items-start gap-2">
+              <Calendar size={14} className="mt-0.5 shrink-0 text-brand-300" />
+              <div>
+                <span className="block text-[0.6rem] uppercase tracking-wider text-white/55">Service</span>
+                <strong className="text-white">{form.serviceDate}</strong>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <Users size={14} className="mt-0.5 shrink-0 text-brand-300" />
+              <div>
+                <span className="block text-[0.6rem] uppercase tracking-wider text-white/55">Party &amp; Area</span>
+                <strong className="text-white">{form.attendeeCount} · {form.area}</strong>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2 sm:col-span-2">
+              <MapPin size={14} className="mt-0.5 shrink-0 text-brand-300" />
+              <div>
+                <span className="block text-[0.6rem] uppercase tracking-wider text-white/55">Auditorium Venue</span>
+                <strong className="text-white">{CHURCH.address.full}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2.5 border-t border-white/15 pt-4">
+            <a
+              href={getWhatsAppPassHref()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex flex-1 items-center justify-center gap-2 bg-[#25D366] px-4 py-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-white transition-transform hover:scale-[1.01]"
+            >
+              Send VIP Pass to Protocol on WhatsApp
+              <ArrowRight size={14} />
+            </a>
+          </div>
+        </div>
+
+        {/* Free Welcome Gift: 31-Day Devotional Booklet */}
+        <div className="mt-5 border border-[#d4af37]/50 bg-[#fdfaf2] p-5">
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[#9a7b1c]">
+            Complimentary First-Timer Gift
+          </p>
+          <p className="mt-1 text-sm font-semibold text-ink-950">
+            Download our 31-Day Devotional Booklet (&ldquo;My Purpose: Divine Blueprint&rdquo;) while we prepare for your arrival:
+          </p>
+          <a
+            href={DEVOTIONAL_PDF_URL}
+            download="CPC_Daily_Devotional_31Days.pdf"
+            className="mt-3 inline-flex items-center gap-2 bg-brand-600 px-4 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-white hover:bg-brand-700"
+          >
+            <Download size={14} />
+            Download Free 31-Day Devotional (PDF)
+          </a>
+        </div>
+
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-ink-950/10 pt-5">
+          <p className="flex items-center gap-2 text-xs font-semibold text-brand-700">
+            <Phone size={14} />
+            Morning-of Protocol Line: <a href={CHURCH.phoneHref} className="underline">{CHURCH.phone}</a>
+          </p>
+
+          <Button
+            variant="outlineDark"
+            size="sm"
+            onClick={() => {
+              setForm(emptyForm);
+              setSubmitted(false);
+            }}
+          >
+            Register Another Guest
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
     <div>
-      <Eyebrow>Pre-registration</Eyebrow>
+      <Eyebrow>VIP Pre-Registration</Eyebrow>
       <h2 className="mt-4 font-display text-4xl uppercase leading-none text-ink-950">Tell us you&apos;re coming</h2>
       <p className="mt-3 text-sm leading-relaxed text-ink-950/70">
-        Planning ahead lets us save you seats, prepare for your children, and greet you by name.
+        Planning ahead lets our Protocol &amp; Hospitality team save your seat, prepare for your children, and send you directions from your area in Ile-Ife.
       </p>
 
       {errorMessage && (
@@ -116,12 +217,21 @@ export default function VisitForm() {
             <Input id="visit-name" required placeholder="e.g. Grace Adeleke" value={form.name} onChange={set('name')} />
           </Field>
         </div>
-        <Field label="Phone number *" id="visit-phone">
+        <Field label="Phone / WhatsApp number *" id="visit-phone">
           <Input id="visit-phone" type="tel" required placeholder="080 1234 5678" value={form.phone} onChange={set('phone')} />
         </Field>
         <Field label="Email" id="visit-email">
           <Input id="visit-email" type="email" placeholder="you@email.com" value={form.email} onChange={set('email')} />
         </Field>
+        <div className="sm:col-span-2">
+          <Field label="Coming from which area in Ile-Ife?" id="visit-area">
+            <Select id="visit-area" value={form.area} onChange={set('area')}>
+              {AREA_OPTIONS.map((area) => (
+                <option key={area}>{area}</option>
+              ))}
+            </Select>
+          </Field>
+        </div>
         <Field label="Service *" id="visit-service">
           <Select id="visit-service" value={form.serviceDate} onChange={set('serviceDate')}>
             {SERVICE_OPTIONS.map((option) => (
@@ -134,7 +244,7 @@ export default function VisitForm() {
             <option>1 person (just me)</option>
             <option>2 people</option>
             <option>3 – 5 people (family)</option>
-            <option>6+ people (group)</option>
+            <option>6+ people (campus / group)</option>
           </Select>
         </Field>
         <Field label="Bringing children?" id="visit-kids">
@@ -149,11 +259,11 @@ export default function VisitForm() {
           <Input id="visit-ages" placeholder="e.g. 4 and 8" value={form.kidAges} onChange={set('kidAges')} />
         </Field>
         <div className="sm:col-span-2">
-          <Field label="Special needs or requests" id="visit-notes">
+          <Field label="Need directions, bus guidance, or special assistance?" id="visit-notes">
             <Textarea
               id="visit-notes"
-              rows={3}
-              placeholder="Wheelchair access, translation, directions…"
+              rows={2}
+              placeholder="e.g. Coming from OAU campus gate, need landmark guidance..."
               value={form.specialAssistance}
               onChange={set('specialAssistance')}
             />
@@ -166,7 +276,7 @@ export default function VisitForm() {
           className="sm:col-span-2"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Sending RSVP…' : 'Confirm my visit'}
+          {isSubmitting ? 'Generating Your VIP Pass…' : 'Confirm Visit & Get VIP Pass'}
           <ArrowRight size={14} />
         </Button>
       </form>

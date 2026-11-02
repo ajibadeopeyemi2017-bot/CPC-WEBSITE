@@ -1,4 +1,4 @@
-import { Car, Smile, Users, Sparkles, ArrowRight, ShieldCheck, MapPin } from 'lucide-react';
+import { Car, Smile, Users, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 import { CHURCH, SERVICE_SCHEDULE } from '../../lib/site-config';
 import PageHeader from '../../components/ui/PageHeader';
 import Container from '../../components/ui/Container';
@@ -8,12 +8,15 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Accordion from '../../components/ui/Accordion';
 import VisitForm from '../../components/visit/VisitForm';
+import TransitRouteFinder from '../../components/visit/TransitRouteFinder';
+import FellowshipDirectory from '../../components/connect/FellowshipDirectory';
 import MapCard from '../../components/ui/MapCard';
 import AddToCalendarButton from '../../components/ui/AddToCalendarButton';
 
 export const metadata = {
-  title: "I'm Visiting — Plan a Visit | Christ The Potter Church",
-  description: 'Plan your first visit to Christ The Potter Church in Ile-Ife: service times, directions, parking, kids church, and what to expect.',
+  title: "I'm Visiting — Plan a Visit & Ile-Ife Transit Guide | Christ The Potter Church",
+  description:
+    'Plan your first visit to Christ The Potter Church in Ile-Ife: VIP seat reservation, step-by-step transit directions from OAU campus, Mayfair, Lagere, OAUTHC & Iloro, kids church, and family fellowship directory.',
 };
 
 const steps = [
@@ -25,7 +28,7 @@ const steps = [
 
 const expectations = [
   { icon: Car, title: 'Secure parking', body: 'Park within the PHCN office premises — marshals will direct you to a spot.' },
-  { icon: Smile, title: 'A personal host', body: "Plan ahead and someone will greet you by name and walk you to your seat." },
+  { icon: Smile, title: 'A personal host', body: 'Plan ahead and someone will greet you by name and walk you to your seat.' },
   { icon: Users, title: "Potter's Kids Church", body: 'Bible lessons, worship, crafts and snacks for children, with vetted adult supervision.' },
   { icon: Sparkles, title: 'His presence', body: "From the opening prayer to the benediction, expect God's presence in song and word." },
 ];
@@ -65,18 +68,18 @@ export default function PlanAVisitPage() {
         imageAlt="Apostle Oluwafunminiyi Olufisayo"
       >
         <div className="flex flex-wrap gap-3">
-          <Button variant="solid" size="lg" href="#register" className="w-full sm:w-auto">
-            Reserve a seat
+          <Button variant="solid" size="lg" href="#reserve" className="w-full sm:w-auto">
+            Reserve VIP Seat
             <ArrowRight size={14} />
           </Button>
           <AddToCalendarButton variant="white" size="lg" label="Add to Calendar" className="w-full sm:w-auto" />
-          <Button variant="outlineLight" size="lg" href={CHURCH.mapsUrl} external className="w-full sm:w-auto">
-            Get directions
+          <Button variant="outlineLight" size="lg" href="#transit" className="w-full sm:w-auto">
+            Ile-Ife Transit Guide
           </Button>
         </div>
       </PageHeader>
 
-      <section className="py-20 lg:py-28">
+      <section id="reserve" className="scroll-mt-20 py-20 lg:py-28">
         <Container className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           <Card id="register" className="scroll-mt-24 p-6 sm:p-10">
             <VisitForm />
@@ -109,10 +112,10 @@ export default function PlanAVisitPage() {
         </Container>
       </section>
 
-      <section className="bg-ink-950 py-28 text-white [clip-path:polygon(0_48px,100%_0,100%_calc(100%_-_48px),0_100%)] lg:py-36">
+      <section id="expectations" className="bg-ink-950 py-28 text-white [clip-path:polygon(0_48px,100%_0,100%_calc(100%_-_48px),0_100%)] lg:py-36">
         <Container>
           <SectionHeader tone="light" eyebrow="What to expect" title="Made ready for you" />
-          <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div id="kids" className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {expectations.map(({ icon: Icon, title, body }) => (
               <div key={title} className="border-t border-white/15 pt-6">
                 <Icon size={22} strokeWidth={1.75} className="text-brand-300" />
@@ -122,7 +125,7 @@ export default function PlanAVisitPage() {
             ))}
           </div>
 
-          <div className="mt-16 grid gap-10 border-t border-white/15 pt-10 lg:grid-cols-2">
+          <div id="schedule" className="mt-16 grid gap-10 border-t border-white/15 pt-10 lg:grid-cols-2">
             <div>
               <Eyebrow tone="light">Service times</Eyebrow>
               <ul className="mt-5 space-y-3">
@@ -153,23 +156,27 @@ export default function PlanAVisitPage() {
         </Container>
       </section>
 
-      {/* Interactive Google Maps Section */}
-      <section className="py-20 lg:py-28 bg-paper/60 border-b border-ink-950/10">
+      {/* Interactive Google Maps + Ile-Ife Transit Route Finder */}
+      <section id="directions" className="scroll-mt-20 py-20 lg:py-28 bg-paper/60 border-b border-ink-950/10">
         <Container>
           <div className="mb-10 max-w-xl">
             <Eyebrow>Find your way</Eyebrow>
             <h2 className="mt-3 font-display text-[2.4rem] uppercase leading-[0.95] text-ink-950 sm:text-5xl">
-              Directions &amp; Location
+              Directions &amp; Transit Guide
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-950/70">
-              Easily navigate to our main auditorium in Ile-Ife. Tap the button below to start GPS navigation on your phone or tablet.
+              Navigate directly via GPS or use our Ile-Ife Campus &amp; City Transit Finder below for bus and landmark instructions from your area.
             </p>
           </div>
           <MapCard />
+          <TransitRouteFinder />
         </Container>
       </section>
 
-      <section className="py-20 lg:py-28">
+      {/* Potter's Family Units Directory */}
+      <FellowshipDirectory />
+
+      <section id="faqs" className="scroll-mt-20 py-20 lg:py-28">
         <Container narrow>
           <SectionHeader eyebrow="Common questions" title="Before you come" className="md:grid-cols-1" />
           <Accordion items={faqs} />

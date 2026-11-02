@@ -1,5 +1,4 @@
 import { ArrowDown } from 'lucide-react';
-import { CHURCH } from '../../lib/site-config';
 import { MINISTRIES } from '../../lib/conferences';
 import PageHeader from '../../components/ui/PageHeader';
 import Container from '../../components/ui/Container';
@@ -7,11 +6,13 @@ import SectionHeader from '../../components/ui/SectionHeader';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import ConferencesSection from '../../components/connect/ConferencesSection';
+import FellowshipDirectory from '../../components/connect/FellowshipDirectory';
 import VolunteerForm from '../../components/connect/VolunteerForm';
 
 export const metadata = {
-  title: 'Connect & Conferences | Christ The Potter Church',
-  description: 'Conferences, schools, ministries and serving teams at Christ The Potter Church, Ile-Ife — KYMC, AGOTE, RDS, ROS and AMITES.',
+  title: "Connect, Conferences & Potter's Family Units | Christ The Potter Church",
+  description:
+    "Conferences, AMITES school, Potter's Family Units (house fellowships across Ile-Ife), and serving teams at Christ The Potter Church — KYMC, AGOTE, RDS, ROS.",
 };
 
 export default function ConnectPage() {
@@ -21,11 +22,14 @@ export default function ConnectPage() {
         eyebrow="Connect · Serve · Grow"
         title="Find your place"
         highlight="in the family of God."
-        intro="You aren't meant to walk this journey alone. Attend our conferences, join a ministry team, and release your God-given grace."
+        intro="You aren't meant to walk this journey alone. Attend our conferences, connect with a local Potter's Family Unit in Ile-Ife, and join a ministry team."
       >
         <Button variant="solid" size="lg" href="#conferences">
           Conferences
           <ArrowDown size={14} />
+        </Button>
+        <Button variant="outlineLight" size="lg" href="#fellowships">
+          Family Units (Ile-Ife)
         </Button>
         <Button variant="outlineLight" size="lg" href="#serve">
           Join a team
@@ -34,7 +38,7 @@ export default function ConnectPage() {
 
       <ConferencesSection />
 
-      <section className="bg-ink-950 py-28 text-white [clip-path:polygon(0_48px,100%_0,100%_calc(100%_-_48px),0_100%)] lg:py-36">
+      <section id="ministries" className="scroll-mt-20 bg-ink-950 py-28 text-white [clip-path:polygon(0_48px,100%_0,100%_calc(100%_-_48px),0_100%)] lg:py-36">
         <Container>
           <SectionHeader
             tone="light"
@@ -55,6 +59,9 @@ export default function ConnectPage() {
           </div>
         </Container>
       </section>
+
+      {/* Searchable Potter's Family Units Directory */}
+      <FellowshipDirectory />
 
       <section id="serve" className="scroll-mt-20 py-20 lg:py-28">
         <Container narrow>

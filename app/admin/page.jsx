@@ -10,8 +10,6 @@ import {
   Lock,
   LogOut,
   CheckCircle,
-  Clock,
-  Eye,
   Check,
   X,
   Search,
@@ -20,9 +18,9 @@ import {
   ArrowRight,
   RefreshCw,
   Database,
+  Heart,
 } from 'lucide-react';
 import clsx from 'clsx';
-import { CHURCH } from '../../lib/site-config';
 
 export default function AdminPage() {
   const [token, setToken] = useState(null);
@@ -140,6 +138,27 @@ export default function AdminPage() {
     }
   };
 
+  const handleUpdateConvert = async (id, status) => {
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': token,
+        },
+        body: JSON.stringify({ action: 'update_convert_status', id, value: status }),
+      });
+      const result = await res.json();
+      if (result.success) {
+        setActionSuccess(`New believer follow-up status updated to ${status.replace('_', ' ')}!`);
+        setTimeout(() => setActionSuccess(null), 3000);
+        fetchAdminData(token);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // Export data to CSV
   const exportToCsv = (items, filename) => {
     if (!items || items.length === 0) return;
@@ -175,7 +194,7 @@ export default function AdminPage() {
               Pastoral &amp; Protocol Desk
             </h1>
             <p className="mt-2 text-xs text-ink-950/70">
-              Administrative portal for guest RSVPs, prayer petitions, praise reports, and finance records.
+              Administrative portal for guest RSVPs, souls won, prayer petitions, praise reports, and finance records.
             </p>
           </div>
 
@@ -229,6 +248,10 @@ export default function AdminPage() {
     (v) => !q || [v.name, v.phone, v.serviceDate, v.email].some((f) => f?.toLowerCase().includes(q))
   );
 
+  const filteredConverts = (data?.converts || []).filter(
+    (c) => !q || [c.name, c.phone, c.decisionType, c.location, c.prayerNeed].some((f) => f?.toLowerCase().includes(q))
+  );
+
   const filteredPrayers = (data?.prayers || []).filter(
     (p) => !q || [p.name, p.category, p.details].some((f) => f?.toLowerCase().includes(q))
   );
@@ -239,6 +262,10 @@ export default function AdminPage() {
 
   const filteredVolunteers = (data?.volunteers || []).filter(
     (vol) => !q || [vol.name, vol.phone, vol.department, vol.experience].some((f) => f?.toLowerCase().includes(q))
+  );
+
+  const filteredRegistrations = (data?.registrations || []).filter(
+    (r) => !q || [r.name, r.phone, r.eventTitle, r.location, r.church].some((f) => f?.toLowerCase().includes(q))
   );
 
   const filteredDonations = (data?.donations || []).filter(
@@ -298,7 +325,6 @@ export default function AdminPage() {
         </div>
       </header>
 
-
       {/* Main Container */}
       <main className="mx-auto max-w-7xl px-5 pt-8 sm:px-8">
         {actionSuccess && (
@@ -309,13 +335,21 @@ export default function AdminPage() {
         )}
 
         {/* KPI Summary Cards */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 sm:gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 sm:gap-4">
           <div className="rounded-lg border border-ink-950/10 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between text-brand-600">
               <span className="text-[0.64rem] font-bold uppercase tracking-wider text-ink-950/60">Guests RSVP</span>
               <Users size={16} />
             </div>
             <p className="mt-2 font-display text-3xl text-ink-950">{stats.totalVisitors || 0}</p>
+          </div>
+
+          <div className="rounded-lg border border-emerald-600/25 bg-emerald-50/40 p-4 shadow-sm">
+            <div className="flex items-center justify-between text-emerald-700">
+              <span className="text-[0.64rem] font-bold uppercase tracking-wider text-emerald-900/75">Souls Won</span>
+              <Heart size={16} />
+            </div>
+            <p className="mt-2 font-display text-3xl text-ink-950">{stats.totalConverts || 0}</p>
           </div>
 
           <div className="rounded-lg border border-ink-950/10 bg-white p-4 shadow-sm">
@@ -364,9 +398,11 @@ export default function AdminPage() {
           <div className="flex flex-wrap gap-1.5 rounded-lg bg-white p-1 border border-ink-950/10 shadow-sm">
             {[
               { id: 'visitors', label: 'Guest RSVPs', count: data?.visitors?.length },
+              { id: 'converts', label: 'Souls Won / Converts', count: data?.converts?.length },
               { id: 'prayers', label: 'Prayers', count: data?.prayers?.length },
               { id: 'testimonies', label: 'Praise Reports', count: data?.testimonies?.length },
               { id: 'volunteers', label: 'Volunteers', count: data?.volunteers?.length },
+              { id: 'registrations', label: 'Conferences', count: data?.registrations?.length },
               { id: 'donations', label: 'Giving & Treasury', count: data?.donations?.length },
             ].map((tab) => (
               <button
@@ -484,7 +520,109 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 2: PRAYERS */}
+        {/* TAB 2: SOULS WON / NEW CONVERTS */}
+        {activeTab === 'converts' && (
+          <div className="mt-6">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="font-display text-xl uppercase text-ink-950">Altar Call Decisions &amp; Discipleship</h2>
+                <p className="text-xs text-ink-950/60">
+                  Souls who prayed the Salvation Prayer online and registered for Foundation Class follow-up.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => exportToCsv(data?.converts, 'cpc-new-converts')}
+                className="inline-flex items-center gap-1.5 rounded border border-ink-950/20 bg-white px-3 py-1.5 text-xs font-semibold text-ink-950 hover:bg-paper"
+              >
+                <Download size={13} /> Export CSV
+              </button>
+            </div>
+
+            <div className="overflow-x-auto rounded-lg border border-ink-950/15 bg-white shadow-sm">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-ink-950/10 bg-paper/60 uppercase text-ink-950/60 font-bold">
+                  <tr>
+                    <th className="p-3.5">Believer Name</th>
+                    <th className="p-3.5">Phone / WhatsApp</th>
+                    <th className="p-3.5">Decision Type</th>
+                    <th className="p-3.5">Area / Campus</th>
+                    <th className="p-3.5">Foundation Class / Prayer Note</th>
+                    <th className="p-3.5">Follow-Up Status</th>
+                    <th className="p-3.5">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-ink-950/5">
+                  {filteredConverts.map((c) => (
+                    <tr key={c.id} className="hover:bg-paper/40">
+                      <td className="p-3.5 font-bold text-ink-950">
+                        {c.name}
+                        <div className="text-[0.66rem] font-normal text-ink-950/50">
+                          {new Date(c.createdAt).toLocaleDateString()}
+                        </div>
+                      </td>
+                      <td className="p-3.5">
+                        <a href={`tel:${c.phone}`} className="font-semibold text-brand-700 hover:underline">
+                          {c.phone}
+                        </a>
+                        {c.phone && (
+                          <a
+                            href={`https://wa.me/${c.phone.replace(/\D/g, '').replace(/^0/, '234')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-0.5 block text-[0.68rem] font-bold text-emerald-700 hover:underline"
+                          >
+                            Chat on WhatsApp &rarr;
+                          </a>
+                        )}
+                      </td>
+                      <td className="p-3.5 font-semibold text-brand-800">{c.decisionType}</td>
+                      <td className="p-3.5 text-ink-950/80">{c.location}</td>
+                      <td className="p-3.5 max-w-xs text-ink-950/75">
+                        <span className="block font-semibold text-ink-950">{c.foundationClass}</span>
+                        {c.prayerNeed && (
+                          <span className="mt-0.5 block italic text-ink-950/60">“{c.prayerNeed}”</span>
+                        )}
+                      </td>
+                      <td className="p-3.5">
+                        <span
+                          className={clsx(
+                            'inline-block rounded px-2 py-0.5 text-[0.65rem] font-bold uppercase',
+                            c.status === 'followed_up' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+                          )}
+                        >
+                          {c.status === 'followed_up' ? 'Followed Up' : 'New Soul'}
+                        </span>
+                      </td>
+                      <td className="p-3.5">
+                        {c.status !== 'followed_up' ? (
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateConvert(c.id, 'followed_up')}
+                            className="rounded bg-brand-600 px-2.5 py-1 text-[0.65rem] font-bold uppercase text-white hover:bg-brand-700"
+                          >
+                            Mark Followed Up
+                          </button>
+                        ) : (
+                          <span className="text-green-700 text-xs font-semibold">✓ Connected</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredConverts.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="p-8 text-center text-sm text-ink-950/50">
+                        No salvation decisions match your search.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: PRAYERS */}
         {activeTab === 'prayers' && (
           <div className="mt-6">
             <div className="mb-4 flex items-center justify-between">
@@ -532,7 +670,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 3: TESTIMONIES / MODERATION */}
+        {/* TAB 4: TESTIMONIES / MODERATION */}
         {activeTab === 'testimonies' && (
           <div className="mt-6">
             <div className="mb-4 flex items-center justify-between">
@@ -603,7 +741,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 4: VOLUNTEERS */}
+        {/* TAB 5: VOLUNTEERS */}
         {activeTab === 'volunteers' && (
           <div className="mt-6">
             <div className="mb-4 flex items-center justify-between">
@@ -649,7 +787,65 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 5: GIVING & TREASURY */}
+        {/* TAB 5B: CONFERENCE & SCHOOL REGISTRATIONS */}
+        {activeTab === 'registrations' && (
+          <div className="mt-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-display text-xl uppercase text-ink-950">Conference &amp; AMITES School Delegates</h2>
+              <button
+                type="button"
+                onClick={() => exportToCsv(data?.registrations, 'cpc-conference-delegates')}
+                className="inline-flex items-center gap-1.5 rounded border border-ink-950/20 bg-white px-3 py-1.5 text-xs font-semibold text-ink-950 hover:bg-paper"
+              >
+                <Download size={13} /> Export CSV
+              </button>
+            </div>
+
+            <div className="overflow-x-auto rounded-lg border border-ink-950/15 bg-white shadow-sm">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-ink-950/10 bg-paper/60 uppercase text-ink-950/60 font-bold">
+                  <tr>
+                    <th className="p-3.5">Delegate Name</th>
+                    <th className="p-3.5">Event / School</th>
+                    <th className="p-3.5">Phone / Contact</th>
+                    <th className="p-3.5">City / Church</th>
+                    <th className="p-3.5">Notes</th>
+                    <th className="p-3.5">Submitted</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-ink-950/5">
+                  {filteredRegistrations.map((reg) => (
+                    <tr key={reg.id} className="hover:bg-paper/40">
+                      <td className="p-3.5 font-bold text-ink-950">{reg.name}</td>
+                      <td className="p-3.5 font-bold text-brand-700">{reg.eventTitle}</td>
+                      <td className="p-3.5">
+                        <a href={`tel:${reg.phone}`} className="font-semibold text-ink-950 hover:underline">
+                          {reg.phone}
+                        </a>
+                        {reg.email && <div className="text-[0.7rem] text-ink-950/60">{reg.email}</div>}
+                      </td>
+                      <td className="p-3.5 text-ink-950/80">
+                        {reg.location || 'Ile-Ife'}
+                        {reg.church && <div className="text-[0.7rem] text-ink-950/60">{reg.church}</div>}
+                      </td>
+                      <td className="p-3.5 max-w-sm text-ink-950/80">{reg.notes || 'None noted'}</td>
+                      <td className="p-3.5 text-ink-950/60">{new Date(reg.createdAt).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                  {filteredRegistrations.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="p-8 text-center text-sm text-ink-950/50">
+                        No conference registrations match your search.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: GIVING & TREASURY */}
         {activeTab === 'donations' && (
           <div className="mt-6">
             <div className="mb-4 flex items-center justify-between">

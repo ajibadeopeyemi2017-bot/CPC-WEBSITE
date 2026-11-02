@@ -3,10 +3,13 @@ import { NextResponse } from 'next/server';
 import {
   getVisitors,
   updateVisitorStatus,
+  getConverts,
+  updateConvertStatus,
   getPrayers,
   getTestimonies,
   approveTestimony,
   getVolunteers,
+  getRegistrations,
   getDonations,
   getDonationStats,
   getDatabaseStatus,
@@ -79,7 +82,7 @@ export async function POST(request) {
 }
 
 /**
- * Fetch all administrative data (visitors, prayers, testimonies, volunteers, giving)
+ * Fetch all administrative data (visitors, converts, prayers, testimonies, volunteers, giving)
  */
 export async function GET(request) {
   if (!isAuthorized(request)) {
@@ -90,11 +93,13 @@ export async function GET(request) {
   }
 
   try {
-    const [visitors, prayers, testimonies, volunteers, donations, stats, dbStatus] = await Promise.all([
+    const [visitors, converts, prayers, testimonies, volunteers, registrations, donations, stats, dbStatus] = await Promise.all([
       getVisitors(),
+      getConverts(),
       getPrayers(),
       getTestimonies({ approvedOnly: false }),
       getVolunteers(),
+      getRegistrations(),
       getDonations(),
       getDonationStats(),
       getDatabaseStatus(),
@@ -104,18 +109,22 @@ export async function GET(request) {
       success: true,
       data: {
         visitors,
+        converts,
         prayers,
         testimonies,
         volunteers,
+        registrations,
         donations,
         dbStatus,
         stats: {
           ...stats,
           totalVisitors: visitors.length,
+          totalConverts: converts.length,
           totalPrayers: prayers.length,
           totalTestimonies: testimonies.length,
           pendingTestimonies: testimonies.filter((t) => !t.approved).length,
           totalVolunteers: volunteers.length,
+          totalRegistrations: registrations.length,
         },
       },
     });
@@ -128,7 +137,7 @@ export async function GET(request) {
 }
 
 /**
- * Administrative Actions: Approve testimony, update guest status, etc.
+ * Administrative Actions: Approve testimony, update guest status, update convert follow-up status
  */
 export async function PATCH(request) {
   if (!isAuthorized(request)) {
@@ -164,6 +173,11 @@ export async function PATCH(request) {
       return NextResponse.json({ success: true, updated });
     }
 
+    if (action === 'update_convert_status') {
+      const cleanStatus = sanitizeText(value || 'followed_up', 32);
+      const updated = await updateConvertStatus(cleanId, cleanStatus);
+      return NextResponse.json({ success: true, updated });
+    }
 
     return NextResponse.json(
       { success: false, error: 'Unsupported admin action' },
@@ -176,4 +190,3 @@ export async function PATCH(request) {
     );
   }
 }
-

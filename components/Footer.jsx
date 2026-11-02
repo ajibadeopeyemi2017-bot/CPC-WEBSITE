@@ -77,10 +77,16 @@ export default function Footer() {
             <li className="flex gap-3">
               <Phone size={15} className="mt-0.5 shrink-0 text-brand-300" />
               <div>
-                <a href={CHURCH.phoneHref} className="hover:text-white">
-                  {CHURCH.phone}
-                </a>
-                <span className="block text-[0.68rem] text-white/55">Direct Call Line</span>
+                <div className="space-x-2">
+                  <a href={CHURCH.phoneHref} className="hover:text-white">
+                    {CHURCH.phone}
+                  </a>
+                  <span>·</span>
+                  <a href={CHURCH.phoneAltHref} className="hover:text-white">
+                    {CHURCH.phoneAlt}
+                  </a>
+                </div>
+                <span className="block text-[0.68rem] text-white/55">Direct Call &amp; Devotional Inquiry Lines</span>
               </div>
             </li>
             <li className="flex gap-3">
@@ -100,9 +106,16 @@ export default function Footer() {
             </li>
             <li className="flex gap-3">
               <Mail size={15} className="mt-0.5 shrink-0 text-brand-300" />
-              <a href={`mailto:${CHURCH.email}`} className="break-all hover:text-white">
-                {CHURCH.email}
-              </a>
+              <div>
+                <a href={`mailto:${CHURCH.email}`} className="block break-all hover:text-white">
+                  {CHURCH.email}
+                </a>
+                {CHURCH.emailAlt && (
+                  <a href={`mailto:${CHURCH.emailAlt}`} className="mt-0.5 block text-xs text-white/60 hover:text-white">
+                    {CHURCH.emailAlt}
+                  </a>
+                )}
+              </div>
             </li>
           </ul>
         </div>

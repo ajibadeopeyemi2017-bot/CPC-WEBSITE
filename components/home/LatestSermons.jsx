@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Play, ArrowRight, Download, RotateCcw } from 'lucide-react';
+import Link from 'next/link';
+import { Play, ArrowRight, Download, RotateCcw, BookOpen } from 'lucide-react';
 import {
   SERMONS,
   playSermon,
@@ -40,12 +41,12 @@ export default function LatestSermons() {
   }, []);
 
   return (
-    <section className="pb-20 lg:pb-28">
+    <section id="messages" className="pb-20 lg:pb-28">
       <Container>
         <SectionHeader
           eyebrow="From the pulpit"
           title="Latest messages"
-          aside="“Man shall not live by bread alone, but by every word that proceeds from the mouth of God.” Invest in your spirit man."
+          aside="“Man shall not live by bread alone, but by every word that proceeds from the mouth of God.” Listen to audio or open the apostolic study notes."
         />
 
         <ol className="border-b border-ink-950/10">
@@ -65,9 +66,9 @@ export default function LatestSermons() {
                 </span>
 
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-display text-xl uppercase leading-tight text-ink-950 md:text-2xl">
-                      {sermon.title}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-display text-xl uppercase leading-tight text-ink-950 transition-colors hover:text-brand-600 md:text-2xl">
+                      <Link href={`/sermons/${sermon.id}`}>{sermon.title}</Link>
                     </h3>
                     {isPlaying && (
                       <span className="inline-flex items-center gap-1 rounded bg-brand-600 px-2 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider text-white">
@@ -90,7 +91,7 @@ export default function LatestSermons() {
                   )}
                 </div>
 
-                <div className="col-start-2 flex items-center gap-2 justify-self-start md:col-start-auto">
+                <div className="col-start-2 flex flex-wrap items-center gap-2 justify-self-start md:col-start-auto">
                   {savedPos ? (
                     <Button
                       variant="solid"
@@ -112,6 +113,16 @@ export default function LatestSermons() {
                   >
                     <Play size={12} />
                     {isPlaying ? 'Active' : 'Play'}
+                  </Button>
+
+                  <Button
+                    variant="outlineDark"
+                    size="sm"
+                    href={`/sermons/${sermon.id}`}
+                    title="Read full sermon study notes & takeaways"
+                  >
+                    <BookOpen size={12} />
+                    Study Notes
                   </Button>
 
                   <button

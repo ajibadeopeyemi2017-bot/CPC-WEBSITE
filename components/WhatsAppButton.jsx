@@ -6,6 +6,19 @@ import clsx from 'clsx';
 import { CHURCH } from '../lib/site-config';
 import { WHATSAPP_LINES, dispatchToBothWhatsAppLines, getWhatsAppLinks } from '../lib/whatsapp';
 
+function WhatsAppLogo({ className = 'h-6 w-6' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M12.031 2c-5.516 0-9.998 4.486-9.998 10.004 0 1.764.459 3.487 1.332 5.006L2 22l5.122-1.341a9.956 9.956 0 0 0 4.906 1.293h.004c5.515 0 9.998-4.486 9.998-10.004 0-2.673-1.04-5.186-2.928-7.076A9.936 9.936 0 0 0 12.031 2Zm0 18.295h-.003a8.29 8.29 0 0 1-4.228-1.158l-.303-.18-3.144.824.839-3.066-.198-.314a8.297 8.297 0 0 1-1.275-4.427c0-4.588 3.732-8.321 8.316-8.321 2.221 0 4.308.866 5.878 2.438a8.273 8.273 0 0 1 2.434 5.884c0 4.589-3.731 8.32-8.316 8.32Zm4.562-6.23c-.25-.125-1.478-.73-1.707-.813-.229-.084-.396-.125-.562.125-.167.25-.646.813-.792.98-.145.166-.291.187-.541.062-.25-.125-1.055-.389-2.01-1.24-.743-.663-1.244-1.482-1.39-1.732-.146-.25-.015-.385.11-.51.112-.112.25-.291.375-.437.125-.146.166-.25.25-.417.083-.167.042-.313-.021-.438-.062-.125-.562-1.355-.77-1.855-.203-.487-.41-.421-.563-.429-.145-.007-.312-.009-.479-.009s-.437.063-.666.313c-.229.25-.875.855-.875 2.085s.896 2.418 1.02 2.585c.125.167 1.762 2.691 4.27 3.773.596.258 1.062.412 1.425.527.599.19 1.144.163 1.575.099.48-.072 1.478-.604 1.686-1.188.209-.584.209-1.084.146-1.188-.062-.104-.229-.167-.479-.292Z" />
+    </svg>
+  );
+}
+
 const QUICK_TOPICS = [
   {
     icon: Calendar,
@@ -72,7 +85,7 @@ export default function WhatsAppButton() {
     <aside
       ref={cardRef}
       aria-label="WhatsApp Pastoral and Protocol Support"
-      className="fixed bottom-4 left-4 z-40 sm:bottom-6 sm:left-6 print:hidden"
+      className="fixed bottom-5 right-5 z-40 flex flex-col items-end sm:bottom-6 sm:right-6 print:hidden"
     >
       {/* -------------------------------------------------------- */}
       {/* POPUP CHAT DIALOG */}
@@ -82,22 +95,22 @@ export default function WhatsAppButton() {
           role="dialog"
           aria-modal="true"
           aria-label="Chat with Christ The Potter Church on WhatsApp"
-          className="mb-3 w-[calc(100vw-2rem)] max-w-sm rounded-lg border border-ink-950/15 bg-white text-ink-950 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-200 overflow-hidden sm:w-96"
+          className="mb-3.5 w-[calc(100vw-2.5rem)] max-w-sm rounded-2xl border border-ink-950/10 bg-white text-ink-950 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-200 overflow-hidden sm:w-96"
         >
           {/* Header */}
-          <div className="bg-[#0f4a17] p-4 text-white">
+          <div className="bg-[#25D366] p-4 text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white ring-2 ring-white/20">
-                  <MessageCircle size={22} className="text-[#4ade80]" />
-                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#0f4a17] bg-[#22c55e]" />
+                <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/20 text-white ring-2 ring-white/40">
+                  <WhatsAppLogo className="h-6 w-6 text-white" />
+                  <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#25D366] bg-white" />
                 </div>
                 <div>
-                  <h3 className="font-display text-lg tracking-wide uppercase text-white leading-tight">
+                  <h3 className="font-display text-lg tracking-wide uppercase text-white leading-tight drop-shadow-sm">
                     {CHURCH.shortName}
                   </h3>
-                  <p className="flex items-center gap-1.5 text-xs text-white/80">
-                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#22c55e] animate-pulse" />
+                  <p className="flex items-center gap-1.5 text-xs font-medium text-white/95">
+                    <span className="inline-block h-2 w-2 rounded-full bg-white animate-pulse" />
                     Pastoral Desk &bull; Both Lines Online
                   </p>
                 </div>
@@ -106,30 +119,30 @@ export default function WhatsAppButton() {
                 type="button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Close WhatsApp chat popup"
-                className="rounded p-1 text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+                className="rounded-full p-1.5 text-white/90 hover:bg-black/10 hover:text-white transition-colors"
               >
                 <X size={18} />
               </button>
             </div>
 
             {/* Dual-Number Badges */}
-            <div className="mt-3 flex flex-wrap gap-2 text-[0.62rem] font-bold uppercase tracking-wider text-white/90">
-              <span className="inline-flex items-center gap-1 rounded bg-white/15 px-2 py-0.5">
+            <div className="mt-3 flex flex-wrap gap-2 text-[0.62rem] font-bold uppercase tracking-wider text-white">
+              <span className="inline-flex items-center gap-1 rounded-full bg-black/15 px-2.5 py-0.5">
                 Line 1: 0706 270 9694
               </span>
-              <span className="inline-flex items-center gap-1 rounded bg-white/15 px-2 py-0.5">
+              <span className="inline-flex items-center gap-1 rounded-full bg-black/15 px-2.5 py-0.5">
                 Line 2: 0816 377 6464
               </span>
             </div>
           </div>
 
           {/* Body */}
-          <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto bg-paper/40">
+          <div className="p-4 space-y-4 max-h-[min(55vh,420px)] overflow-y-auto bg-paper/40">
             {/* Status if recently dispatched */}
             {dispatchedMessage ? (
-              <div className="rounded-md border border-emerald-500/30 bg-emerald-50 p-3 text-xs text-emerald-950 animate-in fade-in duration-200">
+              <div className="rounded-md border border-[#25D366]/40 bg-emerald-50 p-3 text-xs text-emerald-950 animate-in fade-in duration-200">
                 <div className="flex items-center gap-2 font-bold text-[#0f4a17]">
-                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                  <CheckCircle2 size={16} className="text-[#25D366] shrink-0" />
                   <span>Dispatched to both pastoral lines!</span>
                 </div>
                 <p className="mt-1 text-[0.72rem] text-ink-950/70">
@@ -139,7 +152,7 @@ export default function WhatsAppButton() {
                   <button
                     type="button"
                     onClick={() => openSingle(dispatchedMessage.links.line1.url)}
-                    className="flex items-center justify-center gap-1.5 rounded bg-[#0f4a17] px-2 py-1.5 text-[0.68rem] font-bold text-white hover:bg-[#156320]"
+                    className="flex items-center justify-center gap-1.5 rounded bg-[#25D366] px-2 py-1.5 text-[0.68rem] font-bold text-white shadow-sm hover:bg-[#1ebe57]"
                   >
                     <span>0706 270 9694</span>
                     <ExternalLink size={11} />
@@ -147,7 +160,7 @@ export default function WhatsAppButton() {
                   <button
                     type="button"
                     onClick={() => openSingle(dispatchedMessage.links.line2.url)}
-                    className="flex items-center justify-center gap-1.5 rounded bg-[#0f4a17] px-2 py-1.5 text-[0.68rem] font-bold text-white hover:bg-[#156320]"
+                    className="flex items-center justify-center gap-1.5 rounded bg-[#25D366] px-2 py-1.5 text-[0.68rem] font-bold text-white shadow-sm hover:bg-[#1ebe57]"
                   >
                     <span>0816 377 6464</span>
                     <ExternalLink size={11} />
@@ -165,10 +178,10 @@ export default function WhatsAppButton() {
               <>
                 {/* Welcome greeting card */}
                 <div className="rounded-md border border-ink-950/10 bg-white p-3.5 text-xs leading-relaxed text-ink-950 shadow-sm">
-                  <p className="font-semibold text-brand-800">Peace and grace to you!</p>
+                  <p className="font-semibold text-[#128C7E]">Peace and grace to you!</p>
                   <p className="mt-1 text-ink-950/75">
                     Messages are delivered simultaneously to both official pastoral WhatsApp numbers:
-                    <strong className="block text-brand-800 mt-0.5">0706 270 9694 &amp; 0816 377 6464</strong>
+                    <strong className="block text-[#0f4a17] mt-0.5">0706 270 9694 &amp; 0816 377 6464</strong>
                   </p>
                 </div>
 
@@ -185,11 +198,11 @@ export default function WhatsAppButton() {
                           key={i}
                           type="button"
                           onClick={() => sendToBoth(topic.message)}
-                          className="group flex w-full items-center gap-2.5 rounded border border-ink-950/15 bg-white p-2.5 text-left text-xs font-medium text-ink-950 transition-all hover:border-[#22c55e] hover:bg-[#eef7ea] hover:text-[#0f4a17]"
+                          className="group flex w-full items-center gap-2.5 rounded border border-ink-950/15 bg-white p-2.5 text-left text-xs font-medium text-ink-950 transition-all hover:border-[#25D366] hover:bg-[#eef7ea] hover:text-[#0f4a17]"
                         >
-                          <Icon size={14} className="shrink-0 text-brand-700 group-hover:text-[#22c55e]" />
+                          <Icon size={14} className="shrink-0 text-[#25D366] group-hover:text-[#1ebe57]" />
                           <span className="flex-1">{topic.label}</span>
-                          <Send size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#0f4a17]" />
+                          <Send size={12} className="opacity-0 group-hover:opacity-100 transition-opacity text-[#25D366]" />
                         </button>
                       );
                     })}
@@ -214,13 +227,13 @@ export default function WhatsAppButton() {
                           sendToBoth(customMessage);
                         }
                       }}
-                      className="flex-1 rounded border border-ink-950/20 bg-white px-3 py-2 text-xs text-ink-950 placeholder:text-ink-950/40 focus:border-[#22c55e] focus:outline-none focus:ring-1 focus:ring-[#22c55e]"
+                      className="flex-1 rounded border border-ink-950/20 bg-white px-3 py-2 text-xs text-ink-950 placeholder:text-ink-950/40 focus:border-[#25D366] focus:outline-none focus:ring-1 focus:ring-[#25D366]"
                     />
                     <button
                       type="button"
                       onClick={() => sendToBoth(customMessage)}
                       aria-label="Send message to both WhatsApp numbers"
-                      className="inline-flex items-center justify-center rounded bg-[#25D366] px-3.5 py-2 text-white hover:bg-[#20ba59] transition-colors"
+                      className="inline-flex items-center justify-center rounded bg-[#25D366] px-3.5 py-2 text-white hover:bg-[#1ebe57] transition-colors shadow-sm"
                       title="Send to both lines: 07062709694 & 08163776464"
                     >
                       <Send size={14} />
@@ -239,7 +252,7 @@ export default function WhatsAppButton() {
       )}
 
       {/* -------------------------------------------------------- */}
-      {/* FLOATING LAUNCHER PILL / BUTTON */}
+      {/* FLOATING WHATSAPP VERTICAL PILL (RIGHT SIDE) */}
       {/* -------------------------------------------------------- */}
       <button
         type="button"
@@ -250,32 +263,32 @@ export default function WhatsAppButton() {
         aria-label={isOpen ? 'Close WhatsApp assistance' : 'Open WhatsApp assistance with Christ The Potter Church'}
         aria-expanded={isOpen}
         className={clsx(
-          'group relative flex items-center gap-2.5 rounded-full px-4 py-3 shadow-2xl transition-all duration-200 sm:px-4.5',
-          'bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white',
-          'hover:from-[#20ba59] hover:to-[#0f7a6d] hover:shadow-green-900/30 hover:scale-105 active:scale-95',
-          'ring-4 ring-white/80'
+          'group relative flex flex-col items-center justify-between rounded-full text-white shadow-2xl transition-all duration-300',
+          'bg-[#25D366] hover:bg-[#1ebe57]',
+          'w-12 py-3.5 sm:w-13 sm:py-4',
+          'hover:shadow-[0_10px_28px_rgba(37,211,102,0.5)] hover:scale-105 active:scale-95',
+          'ring-4 ring-white/95'
         )}
       >
-        {/* Radar ping dot */}
-        <span className="relative flex h-3 w-3">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-          <span className="relative inline-flex h-3 w-3 rounded-full bg-white" />
+        {/* Top: Official WhatsApp logo or close X */}
+        <div className="flex items-center justify-center">
+          {isOpen ? (
+            <X className="h-6 w-6 text-white transition-transform duration-200 group-hover:rotate-90" />
+          ) : (
+            <WhatsAppLogo className="h-7 w-7 shrink-0 text-white transition-transform duration-200 group-hover:scale-110" />
+          )}
+        </div>
+
+        {/* Middle: Vertical Text Label extending upwards */}
+        <span className="my-2 [writing-mode:vertical-rl] rotate-180 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.24em] text-white drop-shadow-sm select-none">
+          {isOpen ? 'Close' : 'WhatsApp'}
         </span>
 
-        {/* WhatsApp Icon */}
-        <MessageCircle size={20} className="shrink-0 transition-transform group-hover:rotate-6" />
-
-        {/* Text Label */}
-        <span className="text-[0.68rem] font-bold uppercase tracking-[0.16em]">
-          WhatsApp Help
+        {/* Bottom: Online pulse indicator dot */}
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-80" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
         </span>
-
-        {/* First-time visitor subtle attention badge */}
-        {!hasInteracted && (
-          <span className="hidden sm:inline-block rounded-full bg-white/20 px-1.5 py-0.5 text-[0.58rem] font-semibold uppercase tracking-wider text-white">
-            2 Lines Online
-          </span>
-        )}
       </button>
     </aside>
   );
