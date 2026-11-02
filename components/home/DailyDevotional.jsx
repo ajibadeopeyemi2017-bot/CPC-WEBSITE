@@ -89,33 +89,33 @@ export default function DailyDevotional() {
             </h2>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="grid w-full grid-cols-4 gap-1.5 sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:gap-2.5">
             <button
               type="button"
               onClick={() => setDayNumber(prevDay)}
-              className="inline-flex items-center gap-1 border border-ink-950/15 bg-white px-3.5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-ink-950 transition-colors hover:border-brand-600"
+              className="inline-flex items-center justify-center gap-1 border border-ink-950/15 bg-white px-2.5 py-2.5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-ink-950 transition-colors hover:border-brand-600 sm:px-3.5 sm:text-[0.68rem] sm:tracking-[0.16em]"
               aria-label="Previous day devotional"
             >
               <ChevronLeft size={14} />
               Prev
             </button>
 
-            <span className="border border-brand-600/30 bg-brand-600 px-4 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white">
-              {current.dayFormatted} of 31
+            <span className="inline-flex items-center justify-center border border-brand-600/30 bg-brand-600 px-2 py-2.5 text-center text-[0.62rem] font-bold uppercase tracking-[0.14em] text-white sm:px-4 sm:text-[0.68rem] sm:tracking-[0.2em]">
+              {current.dayFormatted}
             </span>
 
             <button
               type="button"
               onClick={() => setDayNumber(nextDay)}
-              className="inline-flex items-center gap-1 border border-ink-950/15 bg-white px-3.5 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-ink-950 transition-colors hover:border-brand-600"
+              className="inline-flex items-center justify-center gap-1 border border-ink-950/15 bg-white px-2.5 py-2.5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-ink-950 transition-colors hover:border-brand-600 sm:px-3.5 sm:text-[0.68rem] sm:tracking-[0.16em]"
               aria-label="Next day devotional"
             >
               Next
               <ChevronRight size={14} />
             </button>
 
-            <Button variant="outlineDark" size="sm" href="/devotional">
-              All 31 Days
+            <Button variant="outlineDark" size="sm" href="/devotional" className="w-full px-2 sm:w-auto sm:px-4">
+              All 31
             </Button>
           </div>
         </div>
@@ -240,7 +240,7 @@ export default function DailyDevotional() {
 
             <Link
               href={`/devotional/${current.slug}`}
-              className="group relative aspect-[9/16] w-full overflow-hidden border border-white/15 bg-black"
+              className="group relative mx-auto aspect-[9/16] w-full max-w-[270px] overflow-hidden border border-white/15 bg-black sm:max-w-[330px] lg:max-w-none"
             >
               <Image
                 src={current.cardImage}

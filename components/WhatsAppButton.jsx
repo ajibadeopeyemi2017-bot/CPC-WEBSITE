@@ -85,7 +85,7 @@ export default function WhatsAppButton() {
     <aside
       ref={cardRef}
       aria-label="WhatsApp Pastoral and Protocol Support"
-      className="fixed bottom-5 right-5 z-40 flex flex-col items-end sm:bottom-6 sm:right-6 print:hidden"
+      className="fixed bottom-3 right-3 z-40 flex flex-col items-end sm:bottom-6 sm:right-6 print:hidden"
     >
       {/* -------------------------------------------------------- */}
       {/* POPUP CHAT DIALOG */}
@@ -265,22 +265,22 @@ export default function WhatsAppButton() {
         className={clsx(
           'group relative flex flex-col items-center justify-between rounded-full text-white shadow-2xl transition-all duration-300',
           'bg-[#25D366] hover:bg-[#1ebe57]',
-          'w-12 py-3.5 sm:w-13 sm:py-4',
+          'w-10 py-3 sm:w-13 sm:py-4',
           'hover:shadow-[0_10px_28px_rgba(37,211,102,0.5)] hover:scale-105 active:scale-95',
-          'ring-4 ring-white/95'
+          'ring-2 sm:ring-4 ring-white/95'
         )}
       >
         {/* Top: Official WhatsApp logo or close X */}
         <div className="flex items-center justify-center">
           {isOpen ? (
-            <X className="h-6 w-6 text-white transition-transform duration-200 group-hover:rotate-90" />
+            <X className="h-5 w-5 sm:h-6 sm:w-6 text-white transition-transform duration-200 group-hover:rotate-90" />
           ) : (
-            <WhatsAppLogo className="h-7 w-7 shrink-0 text-white transition-transform duration-200 group-hover:scale-110" />
+            <WhatsAppLogo className="h-5 w-5 sm:h-7 sm:w-7 shrink-0 text-white transition-transform duration-200 group-hover:scale-110" />
           )}
         </div>
 
         {/* Middle: Vertical Text Label extending upwards */}
-        <span className="my-2 [writing-mode:vertical-rl] rotate-180 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.24em] text-white drop-shadow-sm select-none">
+        <span className="my-1.5 sm:my-2 [writing-mode:vertical-rl] rotate-180 text-[9px] sm:text-[11px] font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.24em] text-white drop-shadow-sm select-none">
           {isOpen ? 'Close' : 'WhatsApp'}
         </span>
 

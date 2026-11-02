@@ -335,7 +335,7 @@ export default function AudioPlayerBar() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 left-4 z-40 flex items-center gap-2.5 border border-white/20 bg-ink-950 px-4 py-3 text-[0.66rem] font-bold uppercase tracking-[0.2em] text-white shadow-2xl transition-all hover:bg-brand-700 sm:bottom-6 sm:left-6"
+        className="fixed bottom-3 left-3 z-40 flex items-center gap-2 border border-white/20 bg-ink-950 px-3 py-2.5 text-[0.6rem] font-bold uppercase tracking-[0.16em] text-white shadow-2xl transition-all hover:bg-brand-700 sm:bottom-6 sm:left-6 sm:gap-2.5 sm:px-4 sm:py-3 sm:text-[0.66rem] sm:tracking-[0.2em]"
         aria-label="Open audio player"
       >
         {isPlaying ? (
@@ -346,14 +346,15 @@ export default function AudioPlayerBar() {
               <span className="w-[2px] h-3 bg-brand-300 animate-bounce" />
               <span className="w-[2px] h-1.5 bg-brand-400 animate-pulse" />
             </span>
-            <span className="max-w-[180px] truncate sm:max-w-[240px]">
+            <span className="max-w-[140px] truncate sm:max-w-[240px]">
               {track.title}
             </span>
           </span>
         ) : (
           <span className="flex items-center gap-2">
             <span className="live-dot" />
-            <span>Audio Player / Mixlr</span>
+            <span className="sm:hidden">Audio / Mixlr</span>
+            <span className="hidden sm:inline">Audio Player / Mixlr</span>
           </span>
         )}
       </button>

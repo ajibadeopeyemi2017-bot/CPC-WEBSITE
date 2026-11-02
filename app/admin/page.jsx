@@ -395,7 +395,7 @@ export default function AdminPage() {
         {/* Tab Controls and Search Toolbar */}
         <div className="mt-8 flex flex-col gap-4 border-b border-ink-950/15 pb-4 sm:flex-row sm:items-center sm:justify-between">
           {/* Tabs */}
-          <div className="flex flex-wrap gap-1.5 rounded-lg bg-white p-1 border border-ink-950/10 shadow-sm">
+          <div className="no-scrollbar flex w-full gap-1.5 overflow-x-auto whitespace-nowrap rounded-lg border border-ink-950/10 bg-white p-1 shadow-sm sm:w-auto sm:flex-wrap">
             {[
               { id: 'visitors', label: 'Guest RSVPs', count: data?.visitors?.length },
               { id: 'converts', label: 'Souls Won / Converts', count: data?.converts?.length },

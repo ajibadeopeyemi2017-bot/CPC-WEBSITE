@@ -227,7 +227,7 @@ export default function SermonDetailClient({ sermon, relatedSermons }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:gap-2.5">
               {resumePos ? (
                 <button
                   type="button"
@@ -235,7 +235,7 @@ export default function SermonDetailClient({ sermon, relatedSermons }) {
                     setIsPlaying(true);
                     playSermon(sermon, { resumeTime: resumePos });
                   }}
-                  className="inline-flex items-center gap-2 bg-[#d4af37] px-4 py-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-ink-950 transition-colors hover:bg-[#e3be42]"
+                  className="col-span-2 inline-flex items-center justify-center gap-2 bg-[#d4af37] px-4 py-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-ink-950 transition-colors hover:bg-[#e3be42]"
                 >
                   <RotateCcw size={14} />
                   Resume ({formatAudioTime(resumePos)})
@@ -248,30 +248,30 @@ export default function SermonDetailClient({ sermon, relatedSermons }) {
                   setIsPlaying(true);
                   playSermon(sermon);
                 }}
-                className="inline-flex items-center gap-2 bg-brand-600 px-5 py-3 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-brand-500"
+                className="inline-flex items-center justify-center gap-2 bg-brand-600 px-3.5 py-3 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-brand-500 sm:px-5 sm:text-[0.68rem] sm:tracking-[0.18em]"
               >
                 <Headphones size={15} />
-                {isPlaying ? 'Playing Now' : 'Listen to Audio'}
+                {isPlaying ? 'Playing Now' : 'Listen Audio'}
               </button>
 
               <button
                 type="button"
                 onClick={handleDownload}
                 disabled={downloading}
-                className="inline-flex items-center gap-2 border border-white/25 bg-white/5 px-4 py-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-ink-950 disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 border border-white/25 bg-white/5 px-3.5 py-3 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-white hover:text-ink-950 disabled:opacity-50 sm:px-4 sm:text-[0.68rem] sm:tracking-[0.16em]"
               >
                 <Download size={14} className={downloading ? 'animate-bounce' : ''} />
-                {downloading ? 'Saving MP3...' : 'Download MP3'}
+                {downloading ? 'Saving...' : 'Download MP3'}
               </button>
 
               <a
                 href={getWhatsAppShareUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#25D366] px-4 py-3 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-white transition-transform hover:scale-[1.02]"
+                className="inline-flex items-center justify-center gap-2 bg-[#25D366] px-3.5 py-3 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-white transition-transform hover:scale-[1.02] sm:px-4 sm:text-[0.68rem] sm:tracking-[0.16em]"
               >
                 <WhatsAppIcon size={15} />
-                Share on WhatsApp
+                WhatsApp Share
               </a>
 
               <button
@@ -279,13 +279,14 @@ export default function SermonDetailClient({ sermon, relatedSermons }) {
                 onClick={handleToggleBookmark}
                 title={bookmarked ? 'Saved in your library' : 'Save message for later'}
                 className={clsx(
-                  'inline-flex items-center justify-center border p-3 transition-colors',
+                  'inline-flex items-center justify-center gap-1.5 border p-3 text-[0.66rem] font-bold uppercase tracking-[0.14em] transition-colors',
                   bookmarked
                     ? 'border-brand-400 bg-brand-600 text-white'
                     : 'border-white/25 bg-white/5 text-white/80 hover:border-white hover:text-white'
                 )}
               >
                 {bookmarked ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+                <span className="sm:hidden">{bookmarked ? 'Saved' : 'Save'}</span>
               </button>
             </div>
           </div>

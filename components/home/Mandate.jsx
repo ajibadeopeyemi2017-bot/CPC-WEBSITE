@@ -5,18 +5,21 @@ import Button from '../ui/Button';
 
 export default function Mandate() {
   return (
-    <section id="mandate" className="scroll-mt-20 bg-ink-950 py-32 text-white [clip-path:polygon(0_56px,100%_0,100%_calc(100%_-_56px),0_100%)] lg:py-40">
+    <section
+      id="mandate"
+      className="scroll-mt-20 bg-ink-950 py-20 text-white [clip-path:polygon(0_28px,100%_0,100%_calc(100%_-_28px),0_100%)] sm:py-32 sm:[clip-path:polygon(0_56px,100%_0,100%_calc(100%_-_56px),0_100%)] lg:py-40"
+    >
       <Container narrow>
         <Eyebrow tone="light">Our mandate</Eyebrow>
-        <h2 className="mt-5 font-display text-[2.6rem] uppercase leading-[0.95] sm:text-6xl lg:text-7xl">
+        <h2 className="mt-4 font-display text-[2.2rem] uppercase leading-[0.95] sm:mt-5 sm:text-6xl lg:text-7xl">
           Teaching men to walk
           <span className="block text-brand-300">in the reality of Christ.</span>
         </h2>
-        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-white/80">
+        <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:mt-8 sm:text-lg">
           We are called to teach and preach with apostolic clarity — rooted in deep biblical revelation, fervent
           prayer, and the order of God — so that every believer is trained for life and destiny.
         </p>
-        <Button variant="outlineLight" href="/about" className="mt-10">
+        <Button variant="outlineLight" href="/about" className="mt-8 sm:mt-10">
           About us
           <ArrowRight size={14} />
         </Button>

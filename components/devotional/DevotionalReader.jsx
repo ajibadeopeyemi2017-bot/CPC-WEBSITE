@@ -162,11 +162,11 @@ export default function DevotionalReader({ initialDay }) {
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="grid w-full grid-cols-3 gap-1.5 sm:flex sm:w-auto sm:items-center sm:gap-2">
             <button
               type="button"
               onClick={() => setSelectedDayNum(prevDay)}
-              className="inline-flex items-center gap-1.5 border border-ink-950/15 bg-white px-3.5 py-2 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-ink-950 transition-colors hover:border-brand-600 hover:bg-brand-50"
+              className="inline-flex items-center justify-center gap-1 border border-ink-950/15 bg-white px-2.5 py-2.5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-ink-950 transition-colors hover:border-brand-600 hover:bg-brand-50 sm:px-3.5 sm:py-2 sm:text-[0.68rem] sm:tracking-[0.16em]"
               title={`Go to Day ${prevDay}`}
             >
               <ChevronLeft size={14} />
@@ -179,15 +179,15 @@ export default function DevotionalReader({ initialDay }) {
                 const t = getTodayDevotional();
                 setSelectedDayNum(t.day);
               }}
-              className="border border-brand-600/30 bg-brand-50 px-3.5 py-2 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-brand-700 transition-colors hover:bg-brand-600 hover:text-white"
+              className="inline-flex items-center justify-center border border-brand-600/30 bg-brand-50 px-2.5 py-2.5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-brand-700 transition-colors hover:bg-brand-600 hover:text-white sm:px-3.5 sm:py-2 sm:text-[0.68rem] sm:tracking-[0.16em]"
             >
-              Today&apos;s Reading
+              Today&apos;s Word
             </button>
 
             <button
               type="button"
               onClick={() => setSelectedDayNum(nextDay)}
-              className="inline-flex items-center gap-1.5 border border-ink-950/15 bg-white px-3.5 py-2 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-ink-950 transition-colors hover:border-brand-600 hover:bg-brand-50"
+              className="inline-flex items-center justify-center gap-1 border border-ink-950/15 bg-white px-2.5 py-2.5 text-[0.64rem] font-bold uppercase tracking-[0.12em] text-ink-950 transition-colors hover:border-brand-600 hover:bg-brand-50 sm:px-3.5 sm:py-2 sm:text-[0.68rem] sm:tracking-[0.16em]"
               title={`Go to Day ${nextDay}`}
             >
               Next Day
@@ -440,7 +440,7 @@ export default function DevotionalReader({ initialDay }) {
 
               <div
                 onClick={() => setCardModalOpen(true)}
-                className="group relative aspect-[9/16] w-full cursor-pointer overflow-hidden border border-ink-950/10 bg-ink-950"
+                className="group relative mx-auto aspect-[9/16] w-full max-w-[270px] cursor-pointer overflow-hidden border border-ink-950/10 bg-ink-950 sm:max-w-[330px] lg:max-w-none"
               >
                 <Image
                   src={current.cardImage}

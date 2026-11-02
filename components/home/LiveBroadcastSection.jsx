@@ -49,8 +49,8 @@ export default function LiveBroadcastSection() {
               Join believers across Nigeria and around the globe in our Online Sanctuary. Stream live video on Facebook Live, tune in via low-data Mixlr audio, take live sermon notes, and submit real-time prayer requests.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button variant="solid" size="lg" href="/live">
+            <div className="mt-7 grid grid-cols-1 gap-2.5 sm:mt-8 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
+              <Button variant="solid" size="lg" href="/live" className="w-full sm:w-auto">
                 <Tv size={15} />
                 Enter Online Sanctuary
               </Button>
@@ -59,6 +59,7 @@ export default function LiveBroadcastSection() {
                 variant="outlineLight"
                 size="lg"
                 onClick={() => playLiveMixlr()}
+                className="w-full sm:w-auto"
               >
                 <Volume2 size={15} />
                 Listen on Mixlr Audio
@@ -68,7 +69,7 @@ export default function LiveBroadcastSection() {
                 href={SOCIAL_LINKS.facebookLive}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-300 hover:text-white"
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-300 hover:text-white"
               >
                 Facebook Live
                 <ExternalLink size={13} />

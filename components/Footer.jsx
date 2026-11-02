@@ -148,7 +148,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-3 px-5 py-6 text-xs text-white/50 sm:px-8 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-3 px-5 pb-24 pt-6 text-xs text-white/50 sm:px-8 sm:py-6 md:flex-row md:items-center md:justify-between">
           <p>
             &copy; {new Date().getFullYear()} {CHURCH.name}. All rights reserved.
           </p>
